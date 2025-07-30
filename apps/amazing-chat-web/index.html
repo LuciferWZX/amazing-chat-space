@@ -5,6 +5,32 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
+    <!-- 主题设置脚本 - 在页面渲染前执行，避免主题闪烁 -->
+    <script>
+      (function() {
+        // 立即执行函数，确保在DOM解析前就设置主题
+        try {
+          let theme = localStorage.getItem("amazing-theme"); 
+          // 如果localStorage中没有主题设置，则检测系统主题
+          if (!theme) {
+            // 检测系统是否偏好暗色主题
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            theme = prefersDark ? "dark" : "light";
+          }
+          // 应用主题
+          if (theme === "dark") {
+            document.documentElement.setAttribute("style", "color-scheme: dark;");
+            document.documentElement.classList.add("dark");
+          } else {
+            // 确保light主题时移除dark类
+            document.documentElement.classList.remove("dark");
+          }
+        } catch (e) {
+          // 如果localStorage不可用，静默处理
+          console.warn("无法访问localStorage:", e);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

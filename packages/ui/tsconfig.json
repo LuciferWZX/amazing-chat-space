@@ -7,6 +7,6 @@
 			"@/*": ["./src/*"]
 		}
 	},
-	"include": ["src/**/*", "components.json"],
+	"include": ["src/**/*", "components.json", "scripts"],
 	"exclude": ["node_modules", "dist"]
-} 
+}
