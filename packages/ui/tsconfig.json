@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.web.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*", "components.json"],
+	"exclude": ["node_modules", "dist"]
+} 
