@@ -1,13 +1,19 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import EntryWithAuth from "./EntryWithAuth";
+import EntryWithRouter from "./EntryWithRouter";
 import EntryWithTheme from "./EntryWithTheme";
-
+const queryClient = new QueryClient();
 function Entry() {
 	return (
-		<EntryWithTheme>
-			<div className="bg-muted p-4">
-				<p>This is a chat application</p>
-				<h1>Amazing Chat</h1>
-			</div>
-		</EntryWithTheme>
+		<QueryClientProvider client={queryClient}>
+			<EntryWithTheme>
+				<EntryWithAuth>
+					<EntryWithRouter/>
+				</EntryWithAuth>
+			</EntryWithTheme>
+			<ReactQueryDevtools initialIsOpen={false} />
+		</QueryClientProvider>
 	);
 }
 
