@@ -3,6 +3,8 @@
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"baseUrl": ".",
+		"allowImportingTsExtensions": true,
+		"erasableSyntaxOnly":true,
 		"paths": {
 			"@/*": ["./src/*"]
 		}

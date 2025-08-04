@@ -3,6 +3,7 @@ import RootLayout from "@/layouts";
 import AuthLayout from "@/layouts/auth";
 import BaseLayout from "@/layouts/base";
 import NotFoundPage from "@/pages/404";
+import LoginPage from "@/pages/auth/login";
 import ChatPage from "@/pages/chat";
 import { useMemo } from "react";
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
@@ -30,8 +31,14 @@ export const useRouter=()=>{
                         ],
                     },
                     {
-                        path: "/auth",
+                        path: "",
                         Component: AuthLayout,
+                        children:[
+                            {
+                                path:"/login",
+                                Component: LoginPage,
+                            }
+                        ]
                     },
                 ],
             },
