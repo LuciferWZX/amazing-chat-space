@@ -1,3 +1,4 @@
+export { toast } from "sonner";
 export * from "./alert";
 export * from "./alert-dialog";
 export * from "./aspect-ratio";
