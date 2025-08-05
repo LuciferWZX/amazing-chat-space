@@ -13,10 +13,11 @@
 			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
 		},
-		"./globals.css": "./dist/globals.css"
+		"./globals.css": "./dist/styles/globals.css"
 	},
 	"scripts": {
-		"build": "tsup && node scripts/build.js",
+		"build": "tsup",
+		"postbuild": "node scripts/build.js",
 		"dev": "tsup --watch"
 	},
 	"dependencies": {

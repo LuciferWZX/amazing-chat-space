@@ -1,6 +1,6 @@
 import { SidebarInset, SidebarProvider } from "@amazing-chat/ui";
 import type { CSSProperties } from "react";
-import { Outlet } from "react-router";
+import { Outlet } from "@tanstack/react-router";
 import AppSidebar from "./app-sidebar";
 
 const BaseLayout = () => {

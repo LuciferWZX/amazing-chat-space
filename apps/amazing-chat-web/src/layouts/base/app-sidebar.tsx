@@ -1,6 +1,6 @@
 import { LucideIcons, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@amazing-chat/ui";
 import type { ComponentProps } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 const { HandFist,MessageCircleMore, Settings } = LucideIcons;
 // Menu items.
 const items = [
@@ -18,11 +18,12 @@ const items = [
   ]
   
 type AppSidebarProps = ComponentProps<typeof Sidebar>
+const BASE_PATH='/base'
 const AppSidebar = (props: AppSidebarProps)=>{
     const navigate = useNavigate()
     const location = useLocation()
     const isActive = (path:string)=>{
-        return location.pathname.startsWith(path)
+        return location.pathname.startsWith(BASE_PATH+path)
     }
     return(
         <Sidebar collapsible="icon" {...props}>
@@ -50,7 +51,7 @@ const AppSidebar = (props: AppSidebarProps)=>{
               {items.map((item) => (
                 <SidebarMenuItem  key={item.title}>
                   <SidebarMenuButton isActive={isActive(item.path)} asChild>
-                    <a onClick={()=>navigate(item.path)}>
+                    <a onClick={()=>navigate({to:`${BASE_PATH}${item.path}`})}>
                       <item.icon />
                       <span>{item.title}</span>
                     </a>

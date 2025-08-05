@@ -4,13 +4,11 @@ interface EntryWithAuthProps {
     children: React.ReactNode;
 }
 const EntryWithAuth = ({children }: EntryWithAuthProps) => {
-    const { data, isLoading } = useInitApp();
+    const {  isLoading } = useInitApp();
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>初始化中...</div>;
     }
-    if (!data) {
-        return <div>No data</div>;
-    }
+
 	return children;
 };
 

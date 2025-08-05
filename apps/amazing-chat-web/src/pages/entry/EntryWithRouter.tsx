@@ -1,8 +1,8 @@
-import { useRouter } from "@/hooks/use-router";
-import { RouterProvider } from "react-router";
+
+import router from "@/hooks/router";
+import { RouterProvider } from "@tanstack/react-router";
 
 const EntryWithRouter = () => {
-    const router = useRouter();
     return <RouterProvider router={router} />;
 };
 

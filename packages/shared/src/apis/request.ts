@@ -2,7 +2,11 @@ import { StorageManager } from "@/instants";
 import type { ExtendOptionsInit, ResponseError } from "umi-request";
 import { extend } from "umi-request";
 const errorHandler = (error:ResponseError)=>{
-    console.log("请求出错:",{error})
+    console.error("请求出错:",{error})
+    
+    
+    throw error
+    
 }
 export function createClient(baseURL:string,options?:ExtendOptionsInit){
     return extend({

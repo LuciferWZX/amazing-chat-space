@@ -6,4 +6,4 @@ export type CustomResponse<T> = {
     code: typeof ResponseCode.SUCCESS,
     message: string,
     data: T
-}
+}|undefined
