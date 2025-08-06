@@ -1,7 +1,8 @@
 import { useInitApp } from "@/hooks/use-init-app";
+import type {ReactNode} from "react";
 
 interface EntryWithAuthProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 const EntryWithAuth = ({children }: EntryWithAuthProps) => {
     const {  isLoading } = useInitApp();

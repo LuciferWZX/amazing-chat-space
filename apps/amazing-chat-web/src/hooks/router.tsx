@@ -5,30 +5,22 @@ import BaseLayout from "@/layouts/base";
 import NotFoundPage from "@/pages/404";
 import LoginPage from "@/pages/auth/login";
 import ChatPage from "@/pages/chat";
-import { stores } from "@amazing-chat/shared";
-import { createRootRoute, createRoute, createRouter, redirect } from "@tanstack/react-router";
+import { types } from "@amazing-chat/shared";
+
+import { createRootRouteWithContext, createRoute, createRouter, redirect } from "@tanstack/react-router";
 
     //根路由
-    const rootRoute = createRootRoute({
+    const rootRoute = createRootRouteWithContext<{user:types.AppUser|null}>()({
         component: RootLayout,
+        notFoundComponent:(data)=><NotFoundPage data={data} redirect={{to:"/",replace:true}}/>,
         beforeLoad:(ctx)=>{
-            console.warn("__root")
             const pathname= ctx.location.pathname
             const whitePath="/auth/"
             //以whiteRegPath正则开头的通过
             if (pathname.startsWith(whitePath)){
                 return
             }
-            
-            const user = stores.useAppStore.getState().user;
-            if (!user){
-                throw redirect({
-                    to:"/auth/login",
-                    replace:true
-                })
-            }
-            console.warn("当前用户信息",user)
-            if (ctx.location.pathname === "/"){
+            if (pathname === "/"){
                 throw redirect({
                     to:"/base",
                     replace:true
@@ -40,9 +32,21 @@ import { createRootRoute, createRoute, createRouter, redirect } from "@tanstack/
     const authedRoute = createRoute({
         getParentRoute:()=>rootRoute,
         path:"/base",
-        beforeLoad:(ctx)=>{
-            const pathname= ctx.location.pathname
-            if (pathname === "/base" || pathname === "/base/"){
+        beforeLoad:({location,context})=>{
+            const pathname= location.pathname
+            const user =context.user
+            const isIndex = (pathname === "/base" || pathname === "/base/")
+            console.warn("user",user)
+            if (!user){
+                throw redirect({
+                    to:"/auth/login",
+                    search:isIndex?{}:{
+                        redirect:location.href
+                    },
+                    replace:true
+                })
+            }
+            if (isIndex){
                 throw redirect({
                     to:"/base/chat",
                     replace:true
@@ -84,7 +88,10 @@ import { createRootRoute, createRoute, createRouter, redirect } from "@tanstack/
     const router = createRouter({
         notFoundMode:'fuzzy',
         routeTree,
-        defaultNotFoundComponent:NotFoundPage
+        defaultNotFoundComponent:NotFoundPage,
+        context:{
+            user:null
+        }
     })
 
     export default router

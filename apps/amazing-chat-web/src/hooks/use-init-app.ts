@@ -1,6 +1,6 @@
 import { apis, instants, stores, types } from "@amazing-chat/shared";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 const {StorageManager}=instants
 const {useAppStore}=stores
@@ -10,7 +10,9 @@ export const useInitApp = () => {
     
     // 检查是否在登录页面
     const isPublicPage = window.location.pathname.startsWith('/auth/');
-    
+    const token = useMemo(()=>{
+        return StorageManager.getToken()
+    },[])
     const { data, error, isLoading } = useQuery({
         queryKey: ["userInfo"],
         queryFn: async () => {
@@ -26,7 +28,8 @@ export const useInitApp = () => {
         },
         retry:false,
         refetchOnWindowFocus:false,
-        enabled: !isPublicPage, // 在登录页面时禁用查询
+        // 不在public页面并且token存在时查询
+        enabled: !isPublicPage && !!token,
     });
     
     useEffect(() => {
