@@ -23,6 +23,9 @@ export const useInitApp = () => {
                     access_token:StorageManager.getToken()!
                 });
                 return response.data;
+            }else{
+                //调用接口失败，清除token
+                StorageManager.removeToken()
             }
             return response;
         },

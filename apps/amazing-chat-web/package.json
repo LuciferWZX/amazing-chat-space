@@ -23,11 +23,13 @@
 	"dependencies": {
 		"@amazing-chat/shared": "workspace:*",
 		"@amazing-chat/ui": "workspace:*",
+		"@gsap/react": "^2.1.2",
 		"@tailwindcss/vite": "^4.1.11",
 		"@tanstack/react-query": "^5.83.0",
 		"@tanstack/react-query-devtools": "^5.83.0",
 		"@tanstack/react-router": "^1.130.12",
 		"@tanstack/react-router-devtools": "^1.130.13",
+		"gsap": "^3.13.0",
 		"tailwindcss": "^4.1.11"
 	}
 }

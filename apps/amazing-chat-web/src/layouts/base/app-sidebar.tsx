@@ -21,7 +21,7 @@ const { HandFist, MessageCircleMore, Settings } = LucideIcons;
 // Menu items.
 const items = [
 	{
-		title: "会话",
+		title: "聊天",
 		path: "/chat",
 		icon: MessageCircleMore,
 	},
@@ -68,7 +68,7 @@ const AppSidebar = (props: AppSidebarProps) => {
 						<SidebarMenu>
 							{items.map((item) => (
 								<SidebarMenuItem key={item.title}>
-									<SidebarMenuButton isActive={isActive(item.path)} asChild>
+									<SidebarMenuButton tooltip={item.title} isActive={isActive(item.path)} asChild>
 										<a
 											onClick={() =>
 												navigate({ to: `${BASE_PATH}${item.path}` })

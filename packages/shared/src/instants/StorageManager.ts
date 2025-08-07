@@ -18,6 +18,17 @@ export class StorageManager {
    static setToken(token:string|null){
        return store.set('token',token)
    }
+   static removeToken(){
+       return store.remove('token')
+   }
+
+   static set(key:string,value:any){
+       return store.set(key,value)
+   }
+   static remove(key:string){
+
+       return store.remove(key)
+   }
    /**
     * @description 清除所有数据
     */

@@ -34,6 +34,7 @@ export function NavSecondary({
 						<SidebarMenuItem key={item.title}>
 							<SidebarMenuButton
 								isActive={isActive(item.path)}
+								tooltip={item.title}
 								asChild
 								size="sm"
 							>
