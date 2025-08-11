@@ -18,11 +18,16 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@amazing-chat/ui";
+import { OnlineStatusBadge } from "@/components";
+import { useIMStore } from "@/stores";
 
 const { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } =
 	LucideIcons;
 export function NavUser() {
 	const user = stores.useAppStore(stores.useShallow((state) => state.user))!;
+	const connectStatus = useIMStore(
+		stores.useShallow((state) => state.connectStatus),
+	)!;
 	const { isMobile } = useSidebar();
 
 	return (
@@ -38,6 +43,7 @@ export function NavUser() {
 								<AvatarImage src={user.avatar} alt={user.username} />
 								<AvatarFallback className="rounded-lg">CN</AvatarFallback>
 							</Avatar>
+							<OnlineStatusBadge status={connectStatus} onlyBadge={true} />
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-medium">{user.nickname}</span>
 								<span className="truncate text-xs">{user.email}</span>
@@ -53,10 +59,12 @@ export function NavUser() {
 					>
 						<DropdownMenuLabel className="p-0 font-normal">
 							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-								<Avatar className="h-8 w-8 rounded-lg">
-									<AvatarImage src={user.avatar} alt={user.username} />
-									<AvatarFallback className="rounded-lg">CN</AvatarFallback>
-								</Avatar>
+								<OnlineStatusBadge status={connectStatus}>
+									<Avatar className="h-8 w-8 rounded-lg">
+										<AvatarImage src={user.avatar} alt={user.username} />
+										<AvatarFallback className="rounded-lg">CN</AvatarFallback>
+									</Avatar>
+								</OnlineStatusBadge>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-medium">{user.nickname}</span>
 									<span className="truncate text-xs">{user.email}</span>
