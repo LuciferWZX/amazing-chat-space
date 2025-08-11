@@ -24,3 +24,9 @@ export const getAddress = () => {
 export const register = (data: any) => {
 	return request.post("/register", data);
 };
+/**
+ * 获取同事
+ */
+export const getColleagues = () => {
+	return request.get<CustomResponse<BaseUser[]>>(`${USER_PREFIX}/colleagues`);
+};

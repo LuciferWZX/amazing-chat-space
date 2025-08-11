@@ -1,0 +1,30 @@
+{
+	"name": "@amazing-chat/editor",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"module": "./dist/index.js",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"scripts": {
+		"build": "tsup ",
+		"dev": "tsup --watch"
+	},
+	"dependencies": {
+		"@amazing-chat/shared": "workspace:*",
+		"@amazing-chat/ui": "workspace:*",
+		"@tailwindcss/postcss": "^4.1.11",
+		"postcss": "^8.5.6",
+		"slate": "^0.118.0",
+		"slate-history": "^0.113.1",
+		"slate-react": "^0.117.4",
+		"tailwindcss": "^4.1.11"
+	}
+}

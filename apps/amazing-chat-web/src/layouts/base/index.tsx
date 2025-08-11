@@ -3,6 +3,7 @@ import { Outlet } from "@tanstack/react-router";
 import type { CSSProperties } from "react";
 import useIMInit from "@/layouts/base/use-im-init.ts";
 import AppSidebar from "./app-sidebar";
+import {GlobalSearch} from "@/components";
 
 const BaseLayout = () => {
 	useIMInit();
@@ -21,6 +22,7 @@ const BaseLayout = () => {
 				<SidebarInset className={"size-full"}>
 					<Outlet />
 				</SidebarInset>
+				<GlobalSearch/>
 			</SidebarProvider>
 		</div>
 	);

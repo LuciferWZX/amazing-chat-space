@@ -2,6 +2,7 @@ import { stores, types } from "@amazing-chat/shared";
 import { getRouteApi } from "@tanstack/react-router";
 import { useLayoutEffect } from "react";
 import WKSDK, { ConnectStatus } from "wukongimjssdk";
+import {useIMStore} from "@/stores";
 
 const { ResponseCode } = types;
 const { useAppStore } = stores;
@@ -37,6 +38,7 @@ const useIMInit = () => {
 		);
 	};
 	function connectStatusListener(status: ConnectStatus, reasonCode?: number) {
+		useIMStore.setState({connectStatus:status})
 		if (status === ConnectStatus.Connected) {
 			console.info("连接成功");
 		} else {

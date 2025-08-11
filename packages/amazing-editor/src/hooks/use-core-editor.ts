@@ -1,0 +1,17 @@
+import { consumePlugins } from "@/lib/consume-plugins";
+import { useState } from "react";
+import { createEditor, Editor } from "slate";
+import { withHistory } from "slate-history";
+import { withReact } from "slate-react";
+const useCoreEditor=()=>{
+    const [editor]=useState<Editor>(()=>{
+
+        const plugins:Editor[] = [
+            withHistory,
+            withReact
+        ]
+        return consumePlugins(createEditor(),plugins)
+    })
+    return editor
+}
+export default useCoreEditor;

@@ -1,10 +1,30 @@
-import { Label, ScrollArea, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarInput, Switch } from "@amazing-chat/ui";
+import {cn, Label, ScrollArea, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarInput, Switch } from "@amazing-chat/ui";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { useRef } from "react";
 import ConversationItem from "./ConversationItem";
+import {useIMStore} from "@/stores";
+import {useShallow} from "zustand/react/shallow";
+import {ConnectStatus} from "wukongimjssdk";
 
-
+const IMStatusTag=()=>{
+    const status = useIMStore(useShallow(state => state.connectStatus))
+    const textMap:Record<ConnectStatus, string> = {
+        [ConnectStatus.Connecting]:"连接中",
+        [ConnectStatus.ConnectFail]:"连接失败",
+        [ConnectStatus.Disconnect]:"已断开连接",
+        [ConnectStatus.Connected]:"已连接",
+        [ConnectStatus.ConnectKick]:"Kick",
+    }
+    return(
+        <span className={cn(' text-sm',{
+            'text-green-600':ConnectStatus.Connected === status,
+            'text-red-600':ConnectStatus.Disconnect === status ||ConnectStatus.ConnectKick === status,
+        })}>
+            {textMap[status]}
+        </span>
+    )
+}
 const LeftSide = () => {
     const ref = useRef<HTMLDivElement>(null);
     useGSAP(()=>{
@@ -25,14 +45,14 @@ const LeftSide = () => {
             <SidebarHeader className="gap-3.5 border-b p-4">
                 <div className="flex w-full items-center justify-between">
                     <div className="text-foreground text-base font-medium">
-                       聊天
+                       聊天 <IMStatusTag/>
                     </div>
                     <Label className="flex items-center gap-2 text-sm">
                         <span>Unreads</span>
                         <Switch className="shadow-none" />
                     </Label>
                 </div>
-                <SidebarInput placeholder="Type to search..." />
+                <SidebarInput onFocus={()=>useIMStore.setState({globalSearchVisible:true})}  placeholder="Type to search..." />
             </SidebarHeader>
             <SidebarContent className={" flex-1 overflow-auto"}>
                 <ScrollArea type={'always'} className={'h-full'}>
