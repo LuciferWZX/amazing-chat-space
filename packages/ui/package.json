@@ -13,7 +13,8 @@
 			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
 		},
-		"./globals.css": "./dist/styles/globals.css"
+		"./globals.css": "./dist/styles/globals.css",
+		"./theme.css": "./dist/styles/theme.css"
 	},
 	"scripts": {
 		"build": "tsup",
