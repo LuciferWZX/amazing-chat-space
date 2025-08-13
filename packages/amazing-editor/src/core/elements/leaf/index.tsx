@@ -8,7 +8,7 @@ export const LeafRenderElement=(props:LeafRenderElementProps)=>{
     return(
         <span 
             {...attributes}
-            className={cn({
+            className={cn('whitespace-break-spaces',{
                 "font-bold":leaf.bold,
                 "italic":leaf.italic,
                 "underline":leaf.underline,

@@ -171,7 +171,7 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
             }}
             activeKey={activeKey}
             items={items}
-            onClickItem={(evt, item)=>{
+            onClickItem={(_evt, item)=>{
                 
                 EditorCommand.insertMention(editor,targetRange,{
                     character:item.label,
