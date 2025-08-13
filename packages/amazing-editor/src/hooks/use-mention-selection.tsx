@@ -1,8 +1,10 @@
 import { MentionBox, Portal } from '@/components'
 import type { MentionConfig, MentionDataItem } from '@/core'
+import { EditorCommand } from "@/lib/command.ts"
 import { isHotkey } from 'is-hotkey'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Editor, Node, Range } from 'slate'
+import { HistoryEditor } from 'slate-history'
 import { ReactEditor } from 'slate-react'
 
 const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) => {
@@ -15,7 +17,6 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
   const fetchData = useCallback(async () => {
     let data = mentionConfig?.fetch ? await mentionConfig.fetch(keyword) : (mentionConfig?.data ?? [])
     if (data.length > 0) {
-      data = [{ label: '@所有人', value: '@all' }, ...data]
       data = data.filter(item => item.label.startsWith(keyword))
     }
     if (data.length > 0) {
@@ -111,6 +112,20 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
           const nextKey = getNextItemKey(activeKey, items)
           setActiveKey(nextKey)
         }
+        if (isHotkey(['tab','enter'],e)){
+          e.preventDefault()
+          console.warn("选中")
+          const target= items.find(item=>item.value === activeKey)
+          if (target){
+            // Transforms.select(editor,targetRange)
+            EditorCommand.insertMention(editor,targetRange,{
+              character:target.label,
+              value:target.value
+            })
+
+            
+          }
+        }
       }
 
     },
@@ -152,6 +167,9 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
           <MentionBox
             activeKey={activeKey}
             items={items}
+            onClickItem={(evt, item)=>{
+
+            }}
             config={mentionConfig}
             keyword={keyword}
             ref={mentionNodeRef}

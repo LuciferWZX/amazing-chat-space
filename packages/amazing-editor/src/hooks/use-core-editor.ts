@@ -1,3 +1,4 @@
+import { withMention } from "@/core/elements/mention/with-mention.ts";
 import { consumePlugins } from "@/lib/consume-plugins";
 import { useState } from "react";
 import { createEditor, Editor } from "slate";
@@ -7,9 +8,10 @@ const useCoreEditor=()=>{
     const [editor]=useState<Editor>(()=>{
 
         const plugins:Editor[] = [
+            withMention,
             withHistory,
             withReact
-        ]
+        ].reverse()
         return consumePlugins(createEditor(),plugins)
     })
     return editor

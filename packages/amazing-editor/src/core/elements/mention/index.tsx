@@ -15,14 +15,14 @@ export const MentionRenderElement=(props:MentionElementProps)=>{
             {...attributes}
             contentEditable={false}
             data-cy={`mention-${element.character.replace(' ', '-')}`}
-            className={cn("text-primary",{
+            className={cn("inline-block mx-[1px] text-primary",{
                 "border-primary ring-[var(--primary)]/50 ring-[3px]":selected && focused,
                
             })}  
             >
                       {/* Prevent Chromium from interrupting IME when moving the cursor */}
       {/* 1. span + inline-block 2. div + contenteditable=false */}
-                <div contentEditable={false}>
+                <span className={'block'} contentEditable={false}>
                     {IS_MAC ? (
                         <Fragment>
                             {children}@{element.character}
@@ -34,7 +34,7 @@ export const MentionRenderElement=(props:MentionElementProps)=>{
                             {children}
                         </Fragment>
                     )}
-                </div>
+                </span>
         </span>
     )
 }

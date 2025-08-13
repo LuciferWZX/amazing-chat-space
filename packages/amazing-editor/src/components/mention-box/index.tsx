@@ -8,10 +8,11 @@ interface MentionBoxProps extends ComponentProps<'ul'> {
   config: MentionConfig
   keyword: string
   items: MentionDataItem[]
+  onClickItem?: (evt:React.MouseEvent<HTMLLIElement,MouseEvent>,item:MentionDataItem) => void
   activeKey: string | null
 }
 export const MentionBox = (props: MentionBoxProps) => {
-  const { className, config, keyword, activeKey, items, ...rest } = props
+  const { className, config, keyword, activeKey, items,onClickItem, ...rest } = props
   const highlightWrapper = useCallback((label:string)=>{
     return (
         <Highlighter
@@ -36,6 +37,9 @@ export const MentionBox = (props: MentionBoxProps) => {
               className={config.className}
               label={item.label}
               active={activeKey === item.value}
+              onClick={(event)=>{
+                onClickItem?.(event,item)
+              }}
             >
               {config.renderItem ? config.renderItem(item) : highlightWrapper(item.label)}
             </MentionItem>

@@ -1,6 +1,8 @@
-import { Editor } from "slate";
+import type { MentionElement } from "@/types";
+import { Editor, Range, Transforms } from "slate";
+import {HistoryEditor} from "slate-history";
 
-const EditorCommand = {
+export const EditorCommand = {
     //是否加粗
     isBold(editor:Editor){
         const marks = Editor.marks(editor)
@@ -30,5 +32,27 @@ const EditorCommand = {
     hasBackgroundColor(editor:Editor){
         const marks = Editor.marks(editor)
         return !!marks?.backgroundColor
+    },
+    insertMention(
+        editor:Editor,
+        at:Range,
+        mentionParams:{
+            character:string
+            value:string
+        }){
+
+        const mention:MentionElement={
+            type:'mention',
+            character:mentionParams.character,
+            value:mentionParams.value,
+            children:[{text:""}]
+        }
+        HistoryEditor.withNewBatch(editor,()=>{
+            Transforms.select(editor,at)
+            Transforms.insertNodes(editor,mention)
+            Transforms.move(editor)
+        })
+
+        
     }
 }
