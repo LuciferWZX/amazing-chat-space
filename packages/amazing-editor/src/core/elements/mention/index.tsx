@@ -25,13 +25,12 @@ export const MentionRenderElement=(props:MentionElementProps)=>{
                 <span className={'block'} contentEditable={false}>
                     {IS_MAC ? (
                         <Fragment>
-                            {children}@{element.character}
+                            {children}{element.trigger}{element.character}
                         </Fragment>
                     ) : (
     // Others like Android https://github.com/ianstormtaylor/slate/pull/5360
                         <Fragment>
-                            @{element.character}
-                            {children}
+                            {element.trigger}{element.character}{children}
                         </Fragment>
                     )}
                 </span>

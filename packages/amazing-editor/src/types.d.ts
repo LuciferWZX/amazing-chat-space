@@ -22,6 +22,7 @@ type ParagraphElement={
 }
 type MentionElement={
     type:"mention",
+    trigger:string,
     character:string,
     children:CustomText[],
     value:string

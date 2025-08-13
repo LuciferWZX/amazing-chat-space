@@ -4,7 +4,6 @@ import { EditorCommand } from "@/lib/command.ts"
 import { isHotkey } from 'is-hotkey'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Editor, Node, Range } from 'slate'
-import { HistoryEditor } from 'slate-history'
 import { ReactEditor } from 'slate-react'
 
 const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) => {
@@ -120,6 +119,7 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
             // Transforms.select(editor,targetRange)
             EditorCommand.insertMention(editor,targetRange,{
               character:target.label,
+              trigger:mentionConfig?.trigger??'',
               value:target.value
             })
 
@@ -165,10 +165,20 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
       return (
         <Portal>
           <MentionBox
+            onClick={(evt)=>{
+              evt.preventDefault()
+              ReactEditor.focus(editor)  
+            }}
             activeKey={activeKey}
             items={items}
             onClickItem={(evt, item)=>{
-
+                
+                EditorCommand.insertMention(editor,targetRange,{
+                    character:item.label,
+                    trigger:mentionConfig?.trigger??'',
+                    value:item.value
+                  })
+                
             }}
             config={mentionConfig}
             keyword={keyword}

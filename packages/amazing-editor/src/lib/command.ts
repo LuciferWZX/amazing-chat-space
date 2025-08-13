@@ -1,6 +1,6 @@
 import type { MentionElement } from "@/types";
 import { Editor, Range, Transforms } from "slate";
-import {HistoryEditor} from "slate-history";
+import { HistoryEditor } from "slate-history";
 
 export const EditorCommand = {
     //是否加粗
@@ -39,10 +39,12 @@ export const EditorCommand = {
         mentionParams:{
             character:string
             value:string
+            trigger:string
         }){
 
         const mention:MentionElement={
             type:'mention',
+            trigger:mentionParams.trigger,
             character:mentionParams.character,
             value:mentionParams.value,
             children:[{text:""}]
