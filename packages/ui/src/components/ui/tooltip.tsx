@@ -1,7 +1,7 @@
 "use client"
 
-import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 function TooltipProvider({
@@ -17,7 +17,7 @@ function TooltipProvider({
   )
 }
 
-function Tooltip({
+function ShadTooltip({
                    ...props
                  }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return (
@@ -62,4 +62,4 @@ function TooltipContent({
   )
 }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+export { ShadTooltip, TooltipContent, TooltipProvider, TooltipTrigger }

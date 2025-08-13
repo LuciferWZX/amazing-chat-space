@@ -20,7 +20,7 @@ import {
 } from "./sheet"
 import { Skeleton } from "./skeleton"
 import {
-  Tooltip,
+  ShadTooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
@@ -589,7 +589,7 @@ const SidebarMenuButton = React.forwardRef<
     }
 
     return (
-      <Tooltip>
+      <ShadTooltip>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent
           side="right"
@@ -597,7 +597,7 @@ const SidebarMenuButton = React.forwardRef<
           hidden={state !== "collapsed" || isMobile}
           {...tooltip}
         />
-      </Tooltip>
+      </ShadTooltip>
     )
   }
 )
