@@ -4,8 +4,9 @@ const Content = () => {
     return(
         <div className={'flex-1 overflow-auto flex flex-col'}>
             <div className={'mb-auto'}> this is main</div>
-            <div className={'p-4 overflow-auto'}>
+            <div className={'relative'}>
               <AmazingEditor
+                  instanceId={"happy"}
                   mentions={[
                       {
                           trigger:"@",
@@ -27,6 +28,9 @@ const Content = () => {
                       }
                   ]}
                   classes={{viewport:'max-h-38 '}}
+                  onValueChange={value=>{
+                      console.warn("外部组件获取的Value:",value)
+                  }}
                   placeholder={"请输入消息"}/>
             </div>
         </div>

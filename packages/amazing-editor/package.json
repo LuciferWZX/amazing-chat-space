@@ -21,6 +21,7 @@
 		"@amazing-chat/shared": "workspace:*",
 		"@amazing-chat/ui": "workspace:*",
 		"@tailwindcss/postcss": "^4.1.11",
+		"escape-html": "^1.0.3",
 		"is-hotkey": "^0.2.0",
 		"postcss": "^8.5.6",
 		"react-highlight-words": "^0.21.0",
@@ -28,9 +29,11 @@
 		"slate-history": "^0.113.1",
 		"slate-react": "^0.117.4",
 		"tailwindcss": "^4.1.11",
-		"ts-pattern": "^5.8.0"
+		"ts-pattern": "^5.8.0",
+		"zustand": "^5.0.7"
 	},
 	"devDependencies": {
+		"@types/escape-html": "^1.0.4",
 		"@types/is-hotkey": "^0.1.10",
 		"@types/react-highlight-words": "^0.20.0"
 	}

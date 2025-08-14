@@ -53,6 +53,7 @@ export const EditorCommand = {
             Transforms.select(editor,at)
             Transforms.insertNodes(editor,mention)
             Transforms.move(editor)
+            editor.onChange()
         })
 
         

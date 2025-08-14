@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"lodash-es": "^4.17.21",
+		"nanoid": "^5.1.5",
 		"sonner": "^2.0.6",
 		"storejs": "^2.1.0",
 		"umi-request": "^1.4.0",

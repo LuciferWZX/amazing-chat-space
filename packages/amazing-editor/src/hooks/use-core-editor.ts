@@ -12,8 +12,11 @@ const useCoreEditor=()=>{
             withHistory,
             withReact
         ].reverse()
-        return consumePlugins(createEditor(),plugins)
+        const editor = consumePlugins(createEditor(),plugins)
+       
+        return editor
     })
+
     return editor
 }
 export default useCoreEditor;
