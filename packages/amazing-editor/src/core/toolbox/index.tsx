@@ -1,4 +1,4 @@
-import { Button, LucideIcons, Tooltip } from '@amazing-chat/ui'
+import { cn, LucideIcons, Tooltip } from '@amazing-chat/ui'
 
 const { Smile, Image } = LucideIcons
 const Toolbox = () => {
@@ -18,9 +18,18 @@ const Toolbox = () => {
     <header className={'flex gap-1'}>
       {tools.map(tool => (
         <Tooltip asChild={true} key={tool.key} tips={tool.label}>
-          <Button aria-label={tool.label} variant={'ghost'} className={'text-muted-foreground size-6'} size={'icon'}>
+          <button
+            type='button'
+            onClick={() => {
+              console.warn('click')
+            }}
+            className={cn(
+              'bg-input text-muted-foreground/80 hover:bg-accent hover:text-accent-foreground  focus-visible:ring-ring/50 inline-flex size-6 items-center justify-center rounded text-sm transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+            )}
+            aria-label={tool.label}
+          >
             <tool.icon className={'size-4'} />
-          </Button>
+          </button>
         </Tooltip>
       ))}
     </header>

@@ -1,4 +1,5 @@
 import {AmazingEditor} from "@amazing-chat/editor";
+import {AmazingEditorManager} from "@amazing-chat/editor";
 
 const Content = () => {
     return(
@@ -7,6 +8,11 @@ const Content = () => {
             <div className={'relative'}>
               <AmazingEditor
                   instanceId={"happy"}
+                  onSendMessage={(message) => {
+                      console.warn("message", message)
+                      const htmlStr = AmazingEditorManager.serialize(message.value)
+                      console.warn("htmlStr", htmlStr)
+                  }}
                   mentions={[
                       {
                           trigger:"@",
@@ -28,9 +34,6 @@ const Content = () => {
                       }
                   ]}
                   classes={{viewport:'max-h-38 '}}
-                  onValueChange={value=>{
-                      console.warn("外部组件获取的Value:",value)
-                  }}
                   placeholder={"请输入消息"}/>
             </div>
         </div>

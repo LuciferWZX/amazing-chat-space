@@ -12,7 +12,8 @@
         "noExplicitAny": "off"
       },
       "complexity": {
-        "noForEach": "warn"
+        "noForEach": "warn",
+        "noStaticOnlyClass": "off"
       },
       "style": {
         "noNonNullAssertion": "off",

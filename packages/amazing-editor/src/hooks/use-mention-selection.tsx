@@ -1,6 +1,6 @@
 import { MentionBox, Portal } from '@/components'
 import type { MentionConfig, MentionDataItem } from '@/core'
-import { EditorCommand } from "@/lib/command.ts"
+import { EditorCommand } from '@/lib/command.ts'
 import { isHotkey } from 'is-hotkey'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Editor, Node, Range } from 'slate'
@@ -97,8 +97,7 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
   }
   const onKeydownWithMention = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-
-      if (items.length>0 && targetRange){
+      if (items.length > 0 && targetRange) {
         if (isHotkey('up', e)) {
           e.preventDefault()
           console.warn('up')
@@ -111,25 +110,22 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
           const nextKey = getNextItemKey(activeKey, items)
           setActiveKey(nextKey)
         }
-        if (isHotkey(['tab','enter'],e)){
+        if (isHotkey(['tab', 'enter'], e)) {
           e.preventDefault()
-          console.warn("选中")
-          const target= items.find(item=>item.value === activeKey)
-          if (target){
+          console.warn('选中')
+          const target = items.find(item => item.value === activeKey)
+          if (target) {
             // Transforms.select(editor,targetRange)
-            EditorCommand.insertMention(editor,targetRange,{
-              character:target.label,
-              trigger:mentionConfig?.trigger??'',
-              value:target.value
+            EditorCommand.insertMention(editor, targetRange, {
+              character: target.label,
+              trigger: mentionConfig?.trigger ?? '',
+              value: target.value,
             })
-
-            
           }
         }
       }
-
     },
-    [editor, items, activeKey,targetRange],
+    [editor, items, activeKey, targetRange],
   )
   //获取下拉框数据
   useEffect(() => {
@@ -165,20 +161,18 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
       return (
         <Portal>
           <MentionBox
-            onClick={(evt)=>{
+            onClick={evt => {
               evt.preventDefault()
-              ReactEditor.focus(editor)  
+              ReactEditor.focus(editor)
             }}
             activeKey={activeKey}
             items={items}
-            onClickItem={(_evt, item)=>{
-                
-                EditorCommand.insertMention(editor,targetRange,{
-                    character:item.label,
-                    trigger:mentionConfig?.trigger??'',
-                    value:item.value
-                  })
-                
+            onClickItem={(_evt, item) => {
+              EditorCommand.insertMention(editor, targetRange, {
+                character: item.label,
+                trigger: mentionConfig?.trigger ?? '',
+                value: item.value,
+              })
             }}
             config={mentionConfig}
             keyword={keyword}
