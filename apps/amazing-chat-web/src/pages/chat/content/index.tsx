@@ -1,13 +1,18 @@
 import {AmazingEditor} from "@amazing-chat/editor";
 import {AmazingEditorManager} from "@amazing-chat/editor";
+import {useRef} from "react";
 
 const Content = () => {
+    const ref = useRef<HTMLDivElement|null>(null)
+
     return(
-        <div className={'flex-1 overflow-auto flex flex-col'}>
+        <div className={'relative flex-1 overflow-auto flex flex-col'} ref={ref} >
             <div className={'mb-auto'}> this is main</div>
             <div className={'relative'}>
               <AmazingEditor
+                  expandContainerRef={ref}
                   instanceId={"happy"}
+
                   onSendMessage={(message) => {
                       console.warn("message", message)
                       const htmlStr = AmazingEditorManager.serialize(message.value)

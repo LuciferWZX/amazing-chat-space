@@ -1,7 +1,7 @@
 import { cn } from '@amazing-chat/ui'
 import { useFocused } from 'slate-react'
 
-const FooterTooltip = () => {
+function FooterTooltip() {
   const focused = useFocused()
 
   return (

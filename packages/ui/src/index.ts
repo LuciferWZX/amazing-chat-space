@@ -1,5 +1,6 @@
 export { zodResolver } from '@hookform/resolvers/zod';
 export * as LucideIcons from "lucide-react";
+export type { LucideIcon } from "lucide-react";
 export { useForm } from "react-hook-form";
 export { z } from 'zod';
 export * from "./components/base-form-iItem";

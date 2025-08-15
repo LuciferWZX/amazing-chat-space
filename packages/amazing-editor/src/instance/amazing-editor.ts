@@ -1,8 +1,12 @@
-import { serialize } from '@/lib/serialize'
-import { type EditorInstance, useEditorStore } from '@/stores/use-editor-store'
+import type { Descendant, Editor } from 'slate'
+import type { EditorInstance } from '@/stores/use-editor-store'
+import type { ToolbarActionType } from '@/types'
 import { events } from '@amazing-chat/shared'
-import {type Descendant, type Editor, Element, Node, Text, Transforms} from 'slate'
-import {ReactEditor} from "slate-react";
+import { Element, Node, Text, Transforms } from 'slate'
+import { ReactEditor } from 'slate-react'
+import { match } from 'ts-pattern'
+import { serialize } from '@/lib/serialize'
+import { useEditorStore } from '@/stores/use-editor-store'
 
 export class AmazingEditorManager {
   static emptyValue: Descendant[] = [
@@ -21,6 +25,7 @@ export class AmazingEditorManager {
     const instances = useEditorStore.getState().instances
     return instances.get(id)
   }
+
   /**
    * 序列化编辑器内容为HTML
    * @param value 编辑器内容
@@ -29,6 +34,7 @@ export class AmazingEditorManager {
   static serialize(value: Descendant[]): string {
     return value.map(v => serialize(v)).join('\n')
   }
+
   /**
    * 获取编辑器内容为纯文本
    * @param value 编辑器内容
@@ -36,7 +42,7 @@ export class AmazingEditorManager {
    */
   static getText(value: Descendant[]): string {
     const transformVoidToText = (nodes: Descendant[]): Descendant[] => {
-      return nodes.map(node => {
+      return nodes.map((node) => {
         if (Text.isText(node)) {
           return node
         }
@@ -58,6 +64,7 @@ export class AmazingEditorManager {
       .map(tn => Node.string(tn))
       .join('\n')
   }
+
   /**
    * 判断编辑器内容是否为空
    * @param value 编辑器内容
@@ -65,28 +72,58 @@ export class AmazingEditorManager {
    */
   static isEmpty(value: Descendant[]): boolean {
     const pureText = AmazingEditorManager.getText(value)
-    //替换空格和换行符
+    // 替换空格和换行符
     const pureTextWithoutSpace = pureText.replace(/\s/g, '')
     return pureTextWithoutSpace === ''
   }
+
+  /**
+   * 发送消息
+   * @param instanceId 实例id
+   * @param type 发送类型
+   */
   static sendMessage(instanceId: string, type: 'keyboard' | 'button') {
     const value = useEditorStore.getState().instances.get(instanceId)?.value
     if (value) {
-      //发送消息
+      // 发送消息
       events.emit(`message:send:${instanceId}`, {
         type,
         value,
       })
-      //清空编辑器
+      // 清空编辑器
       const editor = useEditorStore.getState().instances.get(instanceId)!.editor
       this.clearEditor(editor)
     }
   }
+
+  static handleAction(instanceId: string, action: ToolbarActionType) {
+    match(action)
+      .with('emoji', () => {
+        console.warn('emoji')
+      })
+      .with('image', () => {
+        console.warn('image')
+      })
+      .with('expand', () => {
+        console.warn('expand')
+        useEditorStore.getState().setInstanceProps(instanceId, { isExpand: true })
+      })
+      .with('close', () => {
+        console.warn('close')
+        useEditorStore.getState().setInstanceProps(instanceId, { isExpand: false })
+      })
+      .exhaustive()
+  }
+
+  /**
+   * 清空编辑器
+   * @param editor 编辑器实例
+   */
   static clearEditor(editor: Editor) {
-      editor.children = AmazingEditorManager.emptyValue
-      Transforms.select(editor, [0, 0]);
-      ReactEditor.focus(editor);
-      editor.onChange()
-      editor.history = { undos: [], redos: [] } // 手动清空历史
+    editor.children = AmazingEditorManager.emptyValue
+    Transforms.select(editor, [0, 0])
+    ReactEditor.focus(editor)
+    editor.onChange()
+    editor.history = { undos: [], redos: [] } // 手动清空历史
   }
 }

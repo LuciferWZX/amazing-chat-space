@@ -1,4 +1,12 @@
+import type { ComponentProps, ReactNode, RefObject } from 'react'
+import type { Descendant } from 'slate'
+import { cn, ScrollArea } from '@amazing-chat/ui'
+import { Fragment, useMemo } from 'react'
+
+import { Editable, Slate } from 'slate-react'
+import { useShallow } from 'zustand/shallow'
 import ActionBox from '@/core/action-box'
+import ExpandBottomDrawer from '@/core/expand-bottom-drawer'
 import useCoreEditor from '@/hooks/use-core-editor'
 import useEditorAction from '@/hooks/use-editor-action.ts'
 import { useInitEditor } from '@/hooks/use-init-edtor'
@@ -6,13 +14,8 @@ import useMentionSelection from '@/hooks/use-mention-selection'
 import useRender from '@/hooks/use-render'
 import { AmazingEditorManager } from '@/instance/amazing-editor'
 import { useEditorStore } from '@/stores/use-editor-store'
-import { cn, ScrollArea } from '@amazing-chat/ui'
-import { type ComponentProps, type ReactNode, useMemo } from 'react'
-import type { Descendant } from 'slate'
-import { Editable, Slate } from 'slate-react'
-import { useShallow } from 'zustand/shallow'
-import './index.css'
 import FooterTooltip from './toolbox/footer-tooltip'
+import './index.css'
 
 export interface MentionConfig {
   trigger: string
@@ -26,24 +29,29 @@ export interface MentionDataItem {
   value: string
   disabled?: boolean
 }
-interface CoreEditorProps extends Partial<Omit<ComponentProps<typeof Slate>, 'editor' | 'children'>> {
+interface CoreEditorProps
+  extends Partial<Omit<ComponentProps<typeof Slate>, 'editor' | 'children'>> {
   className?: string
   placeholder?: string
   instanceId: string
+  expandContainerRef?: RefObject<HTMLElement | null>
   classes?: {
     viewport?: string
   }
   config?: {
     footer?: ReactNode | null
   }
-  onSendMessage?: (params: { value: Descendant[]; type: 'keyboard' | 'button' }) => void
+  onSendMessage?: (params: {
+    value: Descendant[]
+    type: 'keyboard' | 'button'
+  }) => void
   /**
    * @description 如果有fetch方法，则每次输入时都会调用fetch方法获取数据
    * 如果没有fetch方法，则使用data数据
    */
   mentions?: Array<MentionConfig>
 }
-export const CoreEditor = (props: CoreEditorProps) => {
+export function CoreEditor(props: CoreEditorProps) {
   const {
     className,
     initialValue,
@@ -55,6 +63,7 @@ export const CoreEditor = (props: CoreEditorProps) => {
     config,
     mentions,
     onSendMessage,
+    expandContainerRef,
     ...rest
   } = props
   const editor = useCoreEditor()
@@ -62,12 +71,23 @@ export const CoreEditor = (props: CoreEditorProps) => {
     onSendMessage,
   })
   const value = useEditorStore(
-    useShallow(state => state.instances.get(instanceId)?.value ?? AmazingEditorManager.emptyValue),
+    useShallow(
+      state =>
+        state.instances.get(instanceId)?.value
+        ?? AmazingEditorManager.emptyValue,
+    ),
+  )
+  const isExpand = useEditorStore(
+    useShallow(
+      state =>
+        state.instances.get(instanceId)?.isExpand,
+    ),
   )
 
   useInitEditor(editor, instanceId, initialValue)
   const { renderElement, renderLeaf } = useRender()
-  const { onChangeWithMention, mentionNode, onKeydownWithMention } = useMentionSelection(editor, mentions)
+  const { onChangeWithMention, mentionNode, onKeydownWithMention }
+    = useMentionSelection(editor, mentions)
 
   const footerElement = useMemo(() => {
     if (config?.footer) {
@@ -81,16 +101,54 @@ export const CoreEditor = (props: CoreEditorProps) => {
   const isMoreThanOneLine = useMemo(() => {
     return value.length > 1
   }, [value])
+  const renderCoreElement = () => (
+    <Fragment>
+      {mentionNode}
+      <div
+        className={cn('flex flex-wrap', {
+          'flex-col': isMoreThanOneLine,
+          'items-center': !isMoreThanOneLine,
+        })}
+      >
+        <ScrollArea
+          type="always"
+          className="flex-auto max-w-full min-w-[216px]"
+          classes={{
+            viewport: classes?.viewport,
+          }}
+        >
+          <Editable
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            className={cn('mx-3 my-1 outline-none break-all')}
+            placeholder={placeholder}
+            onKeyDown={(e) => {
+              // 检查事件是否已被处理，如果已处理则不再执行后续方法
+              if (!e.defaultPrevented) {
+                onKeydownWithMention(e)
+              }
 
+              if (!e.defaultPrevented) {
+                onActionKeydown(e)
+              }
+            }}
+          />
+        </ScrollArea>
+        <div className="flex flex-nowrap ml-auto align-end">
+          {footerElement}
+        </div>
+      </div>
+    </Fragment>
+  )
   return (
     <Slate
       editor={editor}
       initialValue={initialValue ?? AmazingEditorManager.emptyValue}
-      onChange={selection => {
+      onChange={(selection) => {
         onChangeWithMention()
         onChange?.(selection)
       }}
-      onValueChange={value => {
+      onValueChange={(value) => {
         useEditorStore.getState().setValue(instanceId, value)
         onValueChange?.(value)
       }}
@@ -105,42 +163,12 @@ export const CoreEditor = (props: CoreEditorProps) => {
             className,
           )}
         >
-          {mentionNode}
-
-          <div
-            className={cn('flex flex-wrap', {
-              'flex-col': isMoreThanOneLine,
-              'items-center': !isMoreThanOneLine,
-            })}
-          >
-            <ScrollArea
-              type={'always'}
-              className={'flex-auto max-w-full min-w-[216px]'}
-              classes={{
-                viewport: classes?.viewport,
-              }}
-            >
-              <Editable
-                renderElement={renderElement}
-                renderLeaf={renderLeaf}
-                className={cn('mx-3 my-1 outline-none break-all')}
-                placeholder={placeholder}
-                onKeyDown={e => {
-                  // 检查事件是否已被处理，如果已处理则不再执行后续方法
-                  if (!e.defaultPrevented) {
-                    onKeydownWithMention(e)
-                  }
-
-                  if (!e.defaultPrevented) {
-                    onActionKeydown(e)
-                  }
-                }}
-              />
-            </ScrollArea>
-            <div className={'flex flex-nowrap ml-auto align-end'}>{footerElement}</div>
-          </div>
+          {!isExpand && renderCoreElement()}
         </div>
         <FooterTooltip />
+        <ExpandBottomDrawer instanceId={instanceId} containerRef={expandContainerRef}>
+          {isExpand && renderCoreElement()}
+        </ExpandBottomDrawer>
       </div>
     </Slate>
   )

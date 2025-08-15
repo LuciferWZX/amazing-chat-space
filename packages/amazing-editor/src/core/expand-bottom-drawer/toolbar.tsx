@@ -1,41 +1,30 @@
 import type { ToolItem } from '@/types'
 import { cn, LucideIcons, Tooltip } from '@amazing-chat/ui'
 import { useMemo } from 'react'
-import { AmazingEditorManager } from '@/index.ts'
+import { AmazingEditorManager } from '@/instance/amazing-editor.ts'
 
-const { Smile, Image, MoveDiagonal } = LucideIcons
-
-interface ToolboxProps {
+const { Minimize2 } = LucideIcons
+interface ExpandDrawerToolbarProps {
   instanceId: string
 }
-function Toolbox(props: ToolboxProps) {
+function ExpandDrawerToolbar(props: ExpandDrawerToolbarProps) {
   const { instanceId } = props
-  const tools: ToolItem[] = useMemo(() => {
+  const endTools: ToolItem[] = useMemo(() => {
     return [
       {
-        label: '表情',
-        icon: Smile,
-        key: 'face',
-      },
-      {
-        label: '图片',
-        icon: Image,
-        key: 'image',
-      },
-      {
-        label: '展开',
-        icon: MoveDiagonal,
-        key: 'expand',
+        label: '收起',
+        icon: Minimize2,
+        key: 'close',
         onClick: (evt) => {
           evt.stopPropagation()
-          AmazingEditorManager.handleAction(instanceId, 'expand')
+          AmazingEditorManager.handleAction(instanceId, 'close')
         },
       },
     ]
   }, [instanceId])
   return (
-    <header className="flex gap-1">
-      {tools.map(tool => (
+    <header className="flex justify-end">
+      {endTools.map(tool => (
         <Tooltip asChild={true} key={tool.key} tips={tool.label}>
           <button
             type="button"
@@ -52,4 +41,4 @@ function Toolbox(props: ToolboxProps) {
     </header>
   )
 }
-export default Toolbox
+export default ExpandDrawerToolbar

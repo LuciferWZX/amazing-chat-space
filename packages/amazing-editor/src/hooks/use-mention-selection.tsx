@@ -1,12 +1,12 @@
-import { MentionBox, Portal } from '@/components'
 import type { MentionConfig, MentionDataItem } from '@/core'
-import { EditorCommand } from '@/lib/command.ts'
 import { isHotkey } from 'is-hotkey'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Editor, Node, Range } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { MentionBox, Portal } from '@/components'
+import { EditorCommand } from '@/lib/command.ts'
 
-const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) => {
+function useMentionSelection(editor: Editor, mentions?: Array<MentionConfig>) {
   const [targetRange, setTargetRange] = useState<Range | null>(null)
   const [keyword, setKeyword] = useState<string>('')
   const [mentionConfig, setMentionConfig] = useState<MentionConfig | null>(null)
@@ -37,10 +37,10 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
       for (const mention of mentions) {
         const curIndex = textBeforeCursor.lastIndexOf(mention.trigger)
         if (curIndex === -1) {
-          //说明没找到关键词
+          // 说明没找到关键词
           continue
         }
-        //说明找到关键词了
+        // 说明找到关键词了
         atIndex = curIndex
         mentionConfig = mention
         break
@@ -49,12 +49,13 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
         const searchText = textBeforeCursor.slice(atIndex)
         const mentionRange = Editor.range(editor, { ...anchor, offset: atIndex }, anchor)
         setTargetRange(mentionRange)
-        //searchText去除前面的trigger
+        // searchText去除前面的trigger
         const keywordWithoutTrigger = searchText.slice(mentionConfig?.trigger.length ?? 0)
         setKeyword(keywordWithoutTrigger)
         setMentionConfig(mentionConfig)
         // editor.selection=mentionRange
-      } else {
+      }
+      else {
         setTargetRange(null)
         setKeyword('')
         setMentionConfig(null)
@@ -127,11 +128,11 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
     },
     [editor, items, activeKey, targetRange],
   )
-  //获取下拉框数据
+  // 获取下拉框数据
   useEffect(() => {
     fetchData()
   }, [mentionConfig, keyword])
-  //渲染下拉框
+  // 渲染下拉框
   useEffect(() => {
     if (targetRange && mentionConfig && items && items.length > 0) {
       const el = mentionNodeRef.current
@@ -141,12 +142,14 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
         el.style.left = `${rect.left + window.pageXOffset}px`
         if (rect.bottom + el.offsetHeight > window.innerHeight) {
           el.style.top = `${rect.bottom - el.offsetHeight - rect.height}px`
-        } else {
+        }
+        else {
           el.style.top = `${rect.top + window.pageYOffset + 24}px`
         }
         if (rect.left + el.offsetWidth > window.innerWidth) {
           el.style.left = `${rect.right - el.offsetWidth - rect.width}px`
-        } else {
+        }
+        else {
           el.style.left = `${rect.left + window.pageXOffset}px`
         }
 
@@ -155,13 +158,13 @@ const useMentionSelection = (editor: Editor, mentions?: Array<MentionConfig>) =>
     }
   }, [targetRange, editor, mentionConfig, items])
 
-  //下拉框节点
+  // 下拉框节点
   const mentionNode = useMemo(() => {
     if (mentionConfig && targetRange && items && items.length > 0) {
       return (
         <Portal>
           <MentionBox
-            onClick={evt => {
+            onClick={(evt) => {
               evt.preventDefault()
               ReactEditor.focus(editor)
             }}

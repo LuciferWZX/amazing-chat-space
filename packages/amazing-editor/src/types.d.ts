@@ -1,38 +1,44 @@
-import type { ReactEditor } from "slate-react"
+import type { ReactEditor } from 'slate-react'
 
-type CustomText = {
-    //文本
-    text:string
-    //加粗
-    bold?:boolean
-    //斜体
-    italic?:boolean
-    //下划线
-    underline?:boolean
-    //删除线
-    strikethrough?:boolean
-    //颜色
-    color?:string
-    //背景色
-    backgroundColor?:string
+interface CustomText {
+  // 文本
+  text: string
+  // 加粗
+  bold?: boolean
+  // 斜体
+  italic?: boolean
+  // 下划线
+  underline?: boolean
+  // 删除线
+  strikethrough?: boolean
+  // 颜色
+  color?: string
+  // 背景色
+  backgroundColor?: string
 }
-type ParagraphElement={
-    type:"paragraph",
-    children:CustomText[]
+interface ParagraphElement {
+  type: 'paragraph'
+  children: CustomText[]
 }
-type MentionElement={
-    type:"mention",
-    trigger:string,
-    character:string,
-    children:CustomText[],
-    value:string
+interface MentionElement {
+  type: 'mention'
+  trigger: string
+  character: string
+  children: CustomText[]
+  value: string
 }
-type  CustomElement = ParagraphElement|MentionElement
-declare module "slate" {
-    interface CustomTypes{
-        Editor:CustomEditor & ReactEditor
-        Element:CustomElement
-        Text:CustomText
-    }
+type CustomElement = ParagraphElement | MentionElement
+declare module 'slate' {
+  interface CustomTypes {
+    Editor: CustomEditor & ReactEditor
+    Element: CustomElement
+    Text: CustomText
+  }
 }
-
+export type ToolbarActionType = 'emoji' | 'image' | 'expand' | 'close'
+export interface ToolItem {
+  label: string
+  key: string
+  icon: LucideIcon
+  onClick?: (evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+}
