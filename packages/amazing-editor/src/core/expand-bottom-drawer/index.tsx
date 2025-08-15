@@ -1,7 +1,7 @@
 import type { ReactNode, RefObject } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import { memo, useRef } from 'react'
+import { useRef } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { Mask, Portal } from '@/components'
 import ExpandDrawerToolbar from '@/core/expand-bottom-drawer/toolbar.tsx'
@@ -24,7 +24,6 @@ function ExpandBottomDrawer(props: ExpandBottomDrawerProps) {
       }
     }),
   )
-  console.warn('须髯')
   useGSAP(
     () => {
       if (isExpand) {
@@ -76,7 +75,6 @@ function ExpandBottomDrawer(props: ExpandBottomDrawerProps) {
     <Portal container={containerRef?.current ?? undefined}>
       <Mask
         onClick={() => {
-          console.warn('点击了mask')
           setInstanceProps(instanceId, { isExpand: false })
         }}
         className="h-0 opacity-0 overflow-hidden"
@@ -100,8 +98,4 @@ function ExpandBottomDrawer(props: ExpandBottomDrawerProps) {
     </Portal>
   )
 }
-export default memo(ExpandBottomDrawer, (prevProps, nextProps) => {
-  const prevChildrenIsNull = prevProps.children === null
-  const nextChildrenIsNull = nextProps.children === null
-  return prevChildrenIsNull === nextChildrenIsNull && prevProps.instanceId === nextProps.instanceId && prevProps.containerRef === nextProps.containerRef
-})
+export default ExpandBottomDrawer

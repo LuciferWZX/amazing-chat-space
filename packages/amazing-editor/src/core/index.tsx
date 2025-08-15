@@ -89,7 +89,7 @@ export function CoreEditor(props: CoreEditorProps) {
   }, [value])
   const renderCoreElement = (isExpandMode?: boolean) => (
     <Fragment>
-      {mentionNode}
+
       <div
         className={cn('flex flex-wrap', {
           'flex-col': isMoreThanOneLine || isExpandMode,
@@ -150,6 +150,7 @@ export function CoreEditor(props: CoreEditorProps) {
       }}
       {...rest}
     >
+      {mentionNode}
       {!isExpand && (
         <div>
           <div
