@@ -40,5 +40,6 @@ export interface ToolItem {
   label: string
   key: string
   icon: LucideIcon
+  hidden?: boolean
   onClick?: (evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }

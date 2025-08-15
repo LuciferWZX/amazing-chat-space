@@ -24,48 +24,54 @@ function ExpandBottomDrawer(props: ExpandBottomDrawerProps) {
       }
     }),
   )
-  useGSAP(() => {
-    if (isExpand) {
-      // 创建timeline来确保动画顺序
-      const tl = gsap.timeline()
+  console.warn('须髯')
+  useGSAP(
+    () => {
+      if (isExpand) {
+        // 创建timeline来确保动画顺序
+        const tl = gsap.timeline()
 
-      // 先执行mask的动画
-      tl.to(maskRef.current, {
-        height: '100%',
-        duration: 0.3,
-        ease: 'power2.inOut',
-        opacity: 1,
-      })
+        // 先执行mask的动画
+        tl.to(maskRef.current, {
+          height: '100%',
+          duration: 0.3,
+          ease: 'power2.inOut',
+          opacity: 1,
+        })
 
-      // 然后执行ref的动画
-      tl.to(ref.current, {
-        height: '80%',
-        duration: 0.3,
-        ease: 'power2.inOut',
-      }, '-=0.1') // 稍微重叠一点，让动画更流畅
-    }
-    else {
-      // 关闭动画：先收起内容区域，再收起mask
-      const tl = gsap.timeline()
+        // 然后执行ref的动画
+        tl.to(
+          ref.current,
+          {
+            height: '80%',
+            duration: 0.3,
+            ease: 'power2.inOut',
+          },
+          '-=0.1',
+        ) // 稍微重叠一点，让动画更流畅
+      }
+      else {
+        // 关闭动画：先收起内容区域，再收起mask
+        const tl = gsap.timeline()
 
-      // 先执行ref的收起动画
-      tl.to(ref.current, {
-        height: '0',
-        duration: 0.3,
-        ease: 'power2.inOut',
-      })
+        // 先执行ref的收起动画
+        tl.to(ref.current, {
+          height: '0',
+          duration: 0.3,
+          ease: 'power2.inOut',
+        })
 
-      // 然后执行mask的收起动画
-      tl.to(maskRef.current, {
-        height: '0',
-        duration: 0.3,
-        ease: 'power2.inOut',
-        opacity: 0,
-      }) // 稍微重叠一点，让动画更流畅
-    }
-  }, { scope: ref, dependencies: [isExpand] })
-
-  console.warn('container', containerRef)
+        // 然后执行mask的收起动画
+        tl.to(maskRef.current, {
+          height: '0',
+          duration: 0.3,
+          ease: 'power2.inOut',
+          opacity: 0,
+        }) // 稍微重叠一点，让动画更流畅
+      }
+    },
+    { scope: ref, dependencies: [isExpand] },
+  )
   return (
     <Portal container={containerRef?.current ?? undefined}>
       <Mask
@@ -83,7 +89,7 @@ function ExpandBottomDrawer(props: ExpandBottomDrawerProps) {
           }}
           className="absolute z-51 bottom-0 left-0 right-0 h-0 bg-background border rounded-t-xl shadow-lg"
         >
-          <div className="pt-2.5">
+          <div className="pt-2.5 h-full flex flex-col">
             <div className="pb-3 px-2">
               <ExpandDrawerToolbar instanceId={instanceId} />
             </div>
@@ -94,4 +100,8 @@ function ExpandBottomDrawer(props: ExpandBottomDrawerProps) {
     </Portal>
   )
 }
-export default memo(ExpandBottomDrawer)
+export default memo(ExpandBottomDrawer, (prevProps, nextProps) => {
+  const prevChildrenIsNull = prevProps.children === null
+  const nextChildrenIsNull = nextProps.children === null
+  return prevChildrenIsNull === nextChildrenIsNull && prevProps.instanceId === nextProps.instanceId && prevProps.containerRef === nextProps.containerRef
+})

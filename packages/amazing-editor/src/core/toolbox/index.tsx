@@ -1,7 +1,9 @@
 import type { ToolItem } from '@/types'
 import { cn, LucideIcons, Tooltip } from '@amazing-chat/ui'
 import { useMemo } from 'react'
+import { useShallow } from 'zustand/shallow'
 import { AmazingEditorManager } from '@/index.ts'
+import { useEditorStore } from '@/stores/use-editor-store.ts'
 
 const { Smile, Image, MoveDiagonal } = LucideIcons
 
@@ -10,6 +12,13 @@ interface ToolboxProps {
 }
 function Toolbox(props: ToolboxProps) {
   const { instanceId } = props
+  const { isExpand } = useEditorStore(
+    useShallow((state) => {
+      return {
+        isExpand: state.instances.get(instanceId)?.isExpand,
+      }
+    }),
+  )
   const tools: ToolItem[] = useMemo(() => {
     return [
       {
@@ -25,6 +34,7 @@ function Toolbox(props: ToolboxProps) {
       {
         label: '展开',
         icon: MoveDiagonal,
+        hidden: isExpand,
         key: 'expand',
         onClick: (evt) => {
           evt.stopPropagation()
@@ -32,10 +42,10 @@ function Toolbox(props: ToolboxProps) {
         },
       },
     ]
-  }, [instanceId])
+  }, [instanceId, isExpand])
   return (
     <header className="flex gap-1">
-      {tools.map(tool => (
+      {tools.filter(item => item.hidden !== true).map(tool => (
         <Tooltip asChild={true} key={tool.key} tips={tool.label}>
           <button
             type="button"

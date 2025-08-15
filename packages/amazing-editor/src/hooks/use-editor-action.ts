@@ -4,6 +4,7 @@ import { useEventBus } from '@amazing-chat/shared'
 import { isHotkey } from 'is-hotkey'
 import { useCallback } from 'react'
 import { AmazingEditorManager } from '@/instance/amazing-editor'
+import { useEditorStore } from '@/stores/use-editor-store.ts'
 
 function useEditorAction(instanceId: string, editor: Editor, actionConfig?: {
   onSendMessage?: (params: { value: Descendant[], type: 'keyboard' | 'button' }) => void
@@ -15,12 +16,15 @@ function useEditorAction(instanceId: string, editor: Editor, actionConfig?: {
   const onActionKeydown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (isHotkey(['enter'], e)) {
-        const isEmpty = AmazingEditorManager.isEmpty(editor.children)
-        e.preventDefault()
-        if (isEmpty) {
-          return
+        const isExpand = useEditorStore.getState().instances.get(instanceId)?.isExpand
+        if (!isExpand) {
+          const isEmpty = AmazingEditorManager.isEmpty(editor.children)
+          e.preventDefault()
+          if (isEmpty) {
+            return
+          }
+          AmazingEditorManager.sendMessage(instanceId, 'keyboard')
         }
-        AmazingEditorManager.sendMessage(instanceId, 'keyboard')
       }
     },
     [instanceId],

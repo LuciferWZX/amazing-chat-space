@@ -3,7 +3,7 @@ import type { Descendant } from 'slate'
 import { cn, ScrollArea } from '@amazing-chat/ui'
 import { Fragment, useMemo } from 'react'
 
-import { Editable, Slate } from 'slate-react'
+import { Editable, ReactEditor, Slate } from 'slate-react'
 import { useShallow } from 'zustand/shallow'
 import ActionBox from '@/core/action-box'
 import ExpandBottomDrawer from '@/core/expand-bottom-drawer'
@@ -29,8 +29,7 @@ export interface MentionDataItem {
   value: string
   disabled?: boolean
 }
-interface CoreEditorProps
-  extends Partial<Omit<ComponentProps<typeof Slate>, 'editor' | 'children'>> {
+interface CoreEditorProps extends Partial<Omit<ComponentProps<typeof Slate>, 'editor' | 'children'>> {
   className?: string
   placeholder?: string
   instanceId: string
@@ -41,10 +40,7 @@ interface CoreEditorProps
   config?: {
     footer?: ReactNode | null
   }
-  onSendMessage?: (params: {
-    value: Descendant[]
-    type: 'keyboard' | 'button'
-  }) => void
+  onSendMessage?: (params: { value: Descendant[], type: 'keyboard' | 'button' }) => void
   /**
    * @description 如果有fetch方法，则每次输入时都会调用fetch方法获取数据
    * 如果没有fetch方法，则使用data数据
@@ -71,23 +67,13 @@ export function CoreEditor(props: CoreEditorProps) {
     onSendMessage,
   })
   const value = useEditorStore(
-    useShallow(
-      state =>
-        state.instances.get(instanceId)?.value
-        ?? AmazingEditorManager.emptyValue,
-    ),
+    useShallow(state => state.instances.get(instanceId)?.value ?? AmazingEditorManager.emptyValue),
   )
-  const isExpand = useEditorStore(
-    useShallow(
-      state =>
-        state.instances.get(instanceId)?.isExpand,
-    ),
-  )
+  const isExpand = useEditorStore(useShallow(state => state.instances.get(instanceId)?.isExpand))
 
   useInitEditor(editor, instanceId, initialValue)
   const { renderElement, renderLeaf } = useRender()
-  const { onChangeWithMention, mentionNode, onKeydownWithMention }
-    = useMentionSelection(editor, mentions)
+  const { onChangeWithMention, mentionNode, onKeydownWithMention } = useMentionSelection(editor, mentions)
 
   const footerElement = useMemo(() => {
     if (config?.footer) {
@@ -101,20 +87,32 @@ export function CoreEditor(props: CoreEditorProps) {
   const isMoreThanOneLine = useMemo(() => {
     return value.length > 1
   }, [value])
-  const renderCoreElement = () => (
+  const renderCoreElement = (isExpandMode?: boolean) => (
     <Fragment>
       {mentionNode}
       <div
         className={cn('flex flex-wrap', {
-          'flex-col': isMoreThanOneLine,
+          'flex-col': isMoreThanOneLine || isExpandMode,
           'items-center': !isMoreThanOneLine,
+          'items-start flex-1 overflow-auto': isExpandMode,
         })}
       >
         <ScrollArea
           type="always"
-          className="flex-auto max-w-full min-w-[216px]"
+          onClick={() => {
+            if (isExpandMode) {
+              ReactEditor.focus(editor)
+            }
+          }}
+          className={cn(
+            '',
+            {
+              'flex-auto max-w-full min-w-[216px]': !isExpandMode,
+              'w-full h-full flex-1 overflow-auto': isExpandMode,
+            },
+          )}
           classes={{
-            viewport: classes?.viewport,
+            viewport: isExpandMode ? 'h-full' : classes?.viewport,
           }}
         >
           <Editable
@@ -134,9 +132,7 @@ export function CoreEditor(props: CoreEditorProps) {
             }}
           />
         </ScrollArea>
-        <div className="flex flex-nowrap ml-auto align-end">
-          {footerElement}
-        </div>
+        <div className="flex flex-nowrap ml-auto align-end">{footerElement}</div>
       </div>
     </Fragment>
   )
@@ -154,22 +150,24 @@ export function CoreEditor(props: CoreEditorProps) {
       }}
       {...rest}
     >
-      <div>
-        <div
-          className={cn(
-            ' mx-5 mb-5.5 placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input min-w-0 rounded-md border bg-transparent text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-            'has-[:focus]:border-primary has-[:focus]:ring-[var(--primary)] has-[:focus]:ring-[2px]',
-            'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive overflow-hidden',
-            className,
-          )}
-        >
-          {!isExpand && renderCoreElement()}
+      {!isExpand && (
+        <div>
+          <div
+            className={cn(
+              ' mx-5 mb-5.5 placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input min-w-0 rounded-md border bg-transparent text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+              'has-[:focus]:border-primary has-[:focus]:ring-[var(--primary)] has-[:focus]:ring-[2px]',
+              'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive overflow-hidden',
+              className,
+            )}
+          >
+            {renderCoreElement()}
+          </div>
+          <FooterTooltip />
         </div>
-        <FooterTooltip />
-        <ExpandBottomDrawer instanceId={instanceId} containerRef={expandContainerRef}>
-          {isExpand && renderCoreElement()}
-        </ExpandBottomDrawer>
-      </div>
+      )}
+      <ExpandBottomDrawer instanceId={instanceId} containerRef={expandContainerRef}>
+        {isExpand ? renderCoreElement(true) : null}
+      </ExpandBottomDrawer>
     </Slate>
   )
 }

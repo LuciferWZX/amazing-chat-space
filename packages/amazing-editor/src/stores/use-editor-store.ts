@@ -56,8 +56,6 @@ export const useEditorStore = create<EditorStoreState & Actions>((set, get) => (
    */
   setInstanceProps: (id: string, props: Partial<EditorInstance>) => {
     const instance = get().instances.get(id)
-    console.warn('instance', instance)
-    console.warn('props', props)
     if (instance) {
       set((state) => {
         return {
