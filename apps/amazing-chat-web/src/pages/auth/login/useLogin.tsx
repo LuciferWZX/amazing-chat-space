@@ -2,8 +2,6 @@ import { apis, instants, stores, types } from "@amazing-chat/shared";
 import { LucideIcons, toast } from "@amazing-chat/ui";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect } from "react";
-
 const { login, getProfile } = apis;
 const { ResponseCode } = types;
 
@@ -16,7 +14,14 @@ export const useLogin = () => {
 
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (params: Parameters<typeof login>[0]) => {
+			toast.dismiss();
+			toast.warning("登录中...", {
+				icon: <LucideIcons.Loader size={16} className={"animate-spin"} />,
+				id: "login_id",
+				duration: Infinity,
+			});
 			const response = await login(params);
+			
 			if (response?.code === ResponseCode.SUCCESS && response?.data) {
 				//保存成功
 				StorageManager.setToken(response.data.access_token);
@@ -53,16 +58,7 @@ export const useLogin = () => {
 			}
 		},
 	});
-	useEffect(() => {
-		if (isPending) {
-			toast.dismiss();
-			toast.warning("登录中...", {
-				icon: <LucideIcons.Loader size={16} className={"animate-spin"} />,
-				id: "login_id",
-				duration: Infinity,
-			});
-		}
-	}, [isPending]);
+
 	return {
 		mutate,
 		isPending,

@@ -1,4 +1,4 @@
-import {cn, Label, ScrollArea, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarInput, Switch } from "@amazing-chat/ui";
+import {cn, Label, ScrollArea, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, LucideIcons, Switch } from "@amazing-chat/ui";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { useRef } from "react";
@@ -41,7 +41,6 @@ const LeftSide = () => {
     },{scope:ref})
     return(
         <aside ref={ref} className={'bg-sidebar flex flex-col overflow-auto  border-sidebar-border border-r w-80'}>
-
             <SidebarHeader className="gap-3.5 border-b p-4">
                 <div className="flex w-full items-center justify-between">
                     <div className="text-foreground text-base font-medium">
@@ -52,8 +51,23 @@ const LeftSide = () => {
                         <Switch className="shadow-none" />
                     </Label>
                 </div>
-                <SidebarInput onFocus={()=>useIMStore.setState({globalSearchVisible:true})}  placeholder="Type to search..." />
-            </SidebarHeader>
+    <button
+        className="border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 inline-flex h-9 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+        onClick={() => useIMStore.setState({globalSearchVisible:true})}
+      >
+        <span className="flex grow items-center">
+          <LucideIcons.SearchIcon
+            className="text-muted-foreground/80 -ms-1 me-3"
+            size={16}
+            aria-hidden="true"
+          />
+          <span className="text-muted-foreground/70 font-normal">Search</span>
+        </span>
+        <kbd className="bg-background text-muted-foreground/70 ms-12 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
+          ⌘K
+        </kbd>
+       </button>
+             </SidebarHeader>
             <SidebarContent className={" flex-1 overflow-auto"}>
                 <ScrollArea type={'always'} className={'h-full'}>
                     <SidebarGroup className="px-3">

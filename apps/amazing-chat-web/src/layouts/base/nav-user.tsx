@@ -94,7 +94,11 @@ export function NavUser() {
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem>
+						<DropdownMenuItem onClick={(event) => {
+							event.preventDefault();
+							stores.useAppStore.setState({logoutOpen:true})
+							
+						}}>
 							<LogOut />
 							Log out
 						</DropdownMenuItem>

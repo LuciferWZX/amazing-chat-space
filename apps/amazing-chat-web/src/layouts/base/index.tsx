@@ -23,6 +23,7 @@ const BaseLayout = () => {
 					<Outlet />
 				</SidebarInset>
 				<GlobalSearch/>
+				
 			</SidebarProvider>
 		</div>
 	);

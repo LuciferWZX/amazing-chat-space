@@ -1,15 +1,27 @@
-import { create } from "zustand";
+import type { AppUser } from '@/types'
+import { create } from 'zustand'
+import createSelectors from './createSelectors'
 
-import type { AppUser } from "@/types";
-import createSelectors from "./createSelectors";
 interface AppStoreState {
-    user:AppUser|null;
-    setUser:(user:AppUser)=>void;
+  user: AppUser | null
+  logoutOpen: boolean
+  kickedOpen: boolean
 }
-
-const useAppStoreBase = create<AppStoreState>((set)=>({
-    user:null,
-    setUser:(user:AppUser)=>set({user}),
+interface Action {
+  reset: () => void
+  setUser: (user: AppUser) => void
+}
+const initialState: AppStoreState = {
+  user: null,
+  logoutOpen: false,
+  kickedOpen: false,
+}
+const useAppStoreBase = create<AppStoreState & Action>(set => ({
+  ...initialState,
+  setUser: (user: AppUser) => set({ user }),
+  reset: () => {
+    set({ ...initialState })
+  },
 }))
 
-export const useAppStore = createSelectors(useAppStoreBase);
+export const useAppStore = createSelectors(useAppStoreBase)
