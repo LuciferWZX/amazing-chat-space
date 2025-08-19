@@ -10,8 +10,6 @@ const SubscribeButton=(props:SubscribeButtonProps)=>{
     return(
         <form.Subscribe selector={state=>[state.canSubmit,state.isSubmitting]}>
             {([canSubmit,isSubmitting])=>{
-                console.warn("canSubmit",canSubmit);
-                console.warn("isSubmitting",isSubmitting);
                 return(
                     <Button disabled={!canSubmit || disabled} type={'submit'} {...restProps}>
                         {isSubmitting?submittingText:children}
