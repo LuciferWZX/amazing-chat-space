@@ -12,7 +12,7 @@ export const useLogin = () => {
 	const router = useRouter();
 	const navigate = useNavigate();
 
-	const { mutate, isPending } = useMutation({
+	const { mutateAsync, isPending } = useMutation({
 		mutationFn: async (params: Parameters<typeof login>[0]) => {
 			toast.dismiss();
 			toast.warning("登录中...", {
@@ -60,7 +60,7 @@ export const useLogin = () => {
 	});
 
 	return {
-		mutate,
+		mutateAsync,
 		isPending,
 	};
 };
