@@ -1,14 +1,14 @@
 {
-	"extends": "../../tsconfig.web.json",
-	"compilerOptions": {
-		"jsx": "react-jsx",
-		"baseUrl": ".",
-		"allowImportingTsExtensions": true,
-		"erasableSyntaxOnly":true,
-		"paths": {
-			"@/*": ["./src/*"]
-		}
-	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist"]
+  "extends": "../../tsconfig.web.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

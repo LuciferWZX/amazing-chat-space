@@ -6,6 +6,7 @@ import ConversationItem from "./ConversationItem";
 import {useIMStore} from "@/stores";
 import {useShallow} from "zustand/react/shallow";
 import {ConnectStatus} from "wukongimjssdk";
+import ConversationContainer from "./conversation-container";
 
 const IMStatusTag=()=>{
     const status = useIMStore(useShallow(state => state.connectStatus))
@@ -67,22 +68,9 @@ const LeftSide = () => {
           ⌘K
         </kbd>
        </button>
-             </SidebarHeader>
+            </SidebarHeader>
             <SidebarContent className={" flex-1 overflow-auto"}>
-                <ScrollArea type={'always'} className={'h-full'}>
-                    <SidebarGroup className="px-3">
-
-                        <SidebarGroupContent>
-                            <ConversationItem
-                                // avatar={'https://avatars.githubusercontent.com/u/61993236'}
-                                shortContext={'你好'}
-                                username={'孙悟空'}
-                                time={"2023/2/3"}/>
-
-                        </SidebarGroupContent>
-
-                    </SidebarGroup>
-                </ScrollArea>
+               <ConversationContainer/>
             </SidebarContent>
         </aside>
     )

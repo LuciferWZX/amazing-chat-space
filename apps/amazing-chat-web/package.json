@@ -31,6 +31,7 @@
 		"@tanstack/react-query-devtools": "^5.83.0",
 		"@tanstack/react-router": "^1.130.12",
 		"@tanstack/react-router-devtools": "^1.130.13",
+		"bignumber.js": "^9.3.1",
 		"gsap": "^3.13.0",
 		"pinyin-pro": "^3.27.0",
 		"tailwindcss": "^4.1.11",

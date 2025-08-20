@@ -2,6 +2,8 @@ import type { ChatMessage } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { stores } from "@amazing-chat/shared";
+import { useIMChat } from "./chat-provider";
+import WKSDK from "wukongimjssdk";
 const {useAppStore,useShallow}=stores
 const fakeMessageMap:Map<number,ChatMessage[]>=new Map([
     [1,[
@@ -63,30 +65,41 @@ const fakeMessageMap:Map<number,ChatMessage[]>=new Map([
 
 export const useChat = () => {
     const userId = useAppStore(useShallow(state=>state.user!.id))
+    const {channel}=useIMChat()
     //当前页码
     const [page,setPage]=useState<number>(1)
     //后续是否还有更多消息
     const [hasMore,setHasMore]=useState(false)
     //消息列表
     const [messages,setMessages]=useState<ChatMessage[]>([])
+
     const {isPending,isFetching}=useQuery({
-        queryKey:[`chat-${userId}`,page],
+        queryKey:[`chat-${userId}`],
         queryFn:async()=>{
-            await new Promise(resolve=>setTimeout(resolve,3000))
-            const messages=fakeMessageMap.get(page)
-            if (messages?.length) {
-                setMessages(prev=>[...prev,...messages])
-                setHasMore(true)
-            }else{
-                setHasMore(false)
-            }
-            return messages
+            return loadMore()
         },
         refetchOnWindowFocus:false,
     })
-    const loadMore=()=>{
-        console.warn("loadMore current page",page);
-        setPage(page+1)
+    const syncMessages=async()=>{
+        if (!channel) {
+            throw new Error('channel is null')
+        }
+ 
+       const messages = await WKSDK.shared().chatManager.syncMessages(channel,opts)
+    }
+    const loadMore=async()=>{
+        const currentPage=page+1
+        console.warn("loadMore:",currentPage);
+        // await new Promise(resolve=>setTimeout(resolve,1000))
+        const messages=fakeMessageMap.get(currentPage-1)
+        if (messages?.length) {
+            setMessages(prev=>[...messages,...prev])
+            setHasMore(true)
+        }else{
+            setHasMore(false)
+        }
+        setPage(currentPage)
+        return messages
     }
     return {
         messages,

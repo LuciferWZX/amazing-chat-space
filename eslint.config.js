@@ -1,5 +1,8 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-    react:true
+  react: true,
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'off',
+  },
 })

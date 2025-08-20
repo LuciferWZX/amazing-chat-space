@@ -1,7 +1,7 @@
 import { stores, types,instants } from "@amazing-chat/shared";
 import { getRouteApi } from "@tanstack/react-router";
 import { useLayoutEffect } from "react";
-import WKSDK, { ConnectStatus } from "wukongimjssdk";
+import WKSDK, { CMDContent, ConnectStatus, Message, SendackPacket } from "wukongimjssdk";
 import {useIMStore} from "@/stores";
 import { match } from "ts-pattern";
 
@@ -21,6 +21,9 @@ const useIMInit = () => {
 				WKSDK.shared().connectManager.removeConnectStatusListener(
 					connectStatusListener,
 				);
+				WKSDK.shared().chatManager.removeMessageStatusListener(listen)
+				WKSDK.shared().chatManager.removeMessageListener(listenMessage)
+				WKSDK.shared().chatManager.removeCMDListener(cmdListener)
 				WKSDK.shared().connectManager.disconnect();
 			};
 		}
@@ -39,7 +42,32 @@ const useIMInit = () => {
 		WKSDK.shared().connectManager.addConnectStatusListener(
 			connectStatusListener,
 		);
+		//监听消息发送状态
+		WKSDK.shared().chatManager.addMessageStatusListener(listen)
+		//监听消息
+		WKSDK.shared().chatManager.addMessageListener(listenMessage)
+		//监听cmd
+		WKSDK.shared().chatManager.addCMDListener(cmdListener)
 	};
+	function cmdListener(message:Message){
+		console.warn("[cmd]",message);
+		const cmdContent = message.content as CMDContent
+		const cmd = cmdContent.cmd
+		const param = cmdContent.param
+		console.warn("[cmd 内容]",{cmd,param});
+	}
+	function listenMessage(message:Message){
+		console.warn("[消息]",message);
+	}
+	function listen(packet:SendackPacket){
+		console.warn("[消息clientSeq]",packet.clientSeq);
+		if (packet.reasonCode === 1) {
+			console.warn("[消息发送成功]",packet.clientSeq);
+		}else{
+			console.warn("[消息发送失败]",packet.clientSeq);
+		}
+		
+	}
 	function connectStatusListener(status: ConnectStatus, reasonCode?: number) {
 		console.warn("连接状态",status,reasonCode)
 		useIMStore.setState({connectStatus:status})
