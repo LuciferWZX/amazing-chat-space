@@ -1,21 +1,23 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, use, type ReactNode } from "react"
-import { Channel } from "wukongimjssdk"
+import { Conversation } from "wukongimjssdk"
 
 type ChatProviderState = {
-    channel:Channel|null
+
+    conversation:Conversation|undefined
 }
 type ChatProviderProps={
     children:ReactNode
+    conversation:Conversation|undefined
 }
 const initialState:ChatProviderState = {
-    channel:null
+    conversation:undefined
 }
 export const ChatProviderContext = createContext<ChatProviderState>(initialState)
 export const ChatProvider = (props: ChatProviderProps) => {
-    const {children}=props
+    const {children,conversation}=props
     return (
-        <ChatProviderContext.Provider value={initialState}>
+        <ChatProviderContext.Provider value={{...initialState,conversation}}>
             {children}
         </ChatProviderContext.Provider>
     )

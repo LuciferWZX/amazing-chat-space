@@ -74,6 +74,11 @@ const chatRoute = createRoute({
 	path: "/chat",
 	component: ChatPage,
 });
+
+export const userChatRoute = createRoute({
+	getParentRoute: () => chatRoute,
+	path: "$",
+});
 //未登录路由
 const unauthedRoute = createRoute({
 	getParentRoute: () => rootRoute,
@@ -88,7 +93,7 @@ const loginRoute = createRoute({
 
 //路由树
 const routeTree = rootRoute.addChildren([
-	authedRoute.addChildren([chatRoute]),
+	authedRoute.addChildren([chatRoute.addChildren([userChatRoute])]),
 	unauthedRoute.addChildren([loginRoute]),
 ]);
 //注册路由

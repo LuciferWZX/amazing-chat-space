@@ -1,7 +1,7 @@
 import { stores, types,instants } from "@amazing-chat/shared";
 import { getRouteApi } from "@tanstack/react-router";
 import { useLayoutEffect } from "react";
-import WKSDK, { CMDContent, ConnectStatus, Message, SendackPacket } from "wukongimjssdk";
+import WKSDK, { ChannelInfo, CMDContent, ConnectStatus, Conversation, ConversationAction, Message, SendackPacket } from "wukongimjssdk";
 import {useIMStore} from "@/stores";
 import { match } from "ts-pattern";
 
@@ -21,9 +21,11 @@ const useIMInit = () => {
 				WKSDK.shared().connectManager.removeConnectStatusListener(
 					connectStatusListener,
 				);
+				WKSDK.shared().conversationManager.removeConversationListener(listenConversation)
 				WKSDK.shared().chatManager.removeMessageStatusListener(listen)
 				WKSDK.shared().chatManager.removeMessageListener(listenMessage)
 				WKSDK.shared().chatManager.removeCMDListener(cmdListener)
+				WKSDK.shared().channelManager.removeListener(channelInfoListener)
 				WKSDK.shared().connectManager.disconnect();
 			};
 		}
@@ -42,12 +44,16 @@ const useIMInit = () => {
 		WKSDK.shared().connectManager.addConnectStatusListener(
 			connectStatusListener,
 		);
+		//监听最近会话
+		WKSDK.shared().conversationManager.addConversationListener(listenConversation)
 		//监听消息发送状态
 		WKSDK.shared().chatManager.addMessageStatusListener(listen)
 		//监听消息
 		WKSDK.shared().chatManager.addMessageListener(listenMessage)
 		//监听cmd
 		WKSDK.shared().chatManager.addCMDListener(cmdListener)
+		//监听频道信息
+		WKSDK.shared().channelManager.addListener(channelInfoListener)
 	};
 	function cmdListener(message:Message){
 		console.warn("[cmd]",message);
@@ -68,12 +74,15 @@ const useIMInit = () => {
 		}
 		
 	}
-	function connectStatusListener(status: ConnectStatus, reasonCode?: number) {
+	async function connectStatusListener(status: ConnectStatus, reasonCode?: number) {
 		console.warn("连接状态",status,reasonCode)
 		useIMStore.setState({connectStatus:status})
 		match(status)
-		.with(ConnectStatus.Connected,()=>{
+		.with(ConnectStatus.Connected,async()=>{
 			console.info("连接成功");
+			const conversations =await WKSDK.shared().conversationManager.sync()
+			useIMStore.setState({conversationList:conversations})
+			
 		})
 		.with(ConnectStatus.Disconnect,()=>{
 			console.error("连接失败", reasonCode); //  reasonCode: 2表示认证失败（uid或token错误）
@@ -92,6 +101,54 @@ const useIMInit = () => {
 		})
 		.with(ConnectStatus.Connecting,()=>{
 			console.info("连接中");
+		})
+	}
+	async function listenConversation(conversation:Conversation,action:ConversationAction) {
+		match(action)
+		.with(ConversationAction.add,()=>{
+			console.warn("[conversation 新增]",conversation);
+			useIMStore.setState(oldState=>{
+				return {
+					conversationList:oldState.conversationList.concat(conversation)
+				}
+			})
+		})
+		.with(ConversationAction.update,()=>{
+			console.warn("[conversation 更新]",conversation);
+			useIMStore.setState(oldState=>{
+				return {
+					conversationList:oldState.conversationList.map(item=>{
+						if (item.channel.channelID===conversation.channel.channelID){
+							return conversation
+						}
+						return item
+					})
+				}
+			})
+		})
+		.with(ConversationAction.remove,()=>{
+			console.warn("[conversation 删除]",conversation);
+			useIMStore.setState(oldState=>{
+				return {
+					conversationList:oldState.conversationList.filter(item=>item.channel.channelID!==conversation.channel.channelID)
+				}
+			})
+		})
+	}
+	function channelInfoListener(channelInfo:ChannelInfo){
+		console.warn("[频道详情更新]",channelInfo);
+		useIMStore.setState(oldState=>{
+			return {
+				conversationList:oldState.conversationList.map(item=>{
+					if(item.channel.channelID===channelInfo.channel.channelID){
+						return {
+							...item,
+							channelInfo:channelInfo
+						} as Conversation
+					}
+					return item
+				})
+			}
 		})
 	}
 };

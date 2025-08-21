@@ -2,8 +2,10 @@ import useMyColleagues from "@/components/global-search/useMyColleagues.ts";
 import { useIMStore } from "@/stores";
 import { types } from "@amazing-chat/shared";
 import { Avatar, AvatarFallback, AvatarImage, Badge, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, LucideIcons, ScrollArea, Skeleton } from "@amazing-chat/ui";
+import { useNavigate } from "@tanstack/react-router";
 import { pinyin } from "pinyin-pro";
 import { useMemo } from "react";
+import WKSDK, { Channel } from "wukongimjssdk";
 import { useShallow } from "zustand/react/shallow";
 
 const {BadgeCheckIcon}=LucideIcons
@@ -19,6 +21,7 @@ export const GlobalSearch = (props:GlobalSearchProps) => {
         useIMStore.setState({globalSearchVisible:v})
     }
     const {colleagues,isFetching}=useMyColleagues({enabled:open ?? visible})
+    const navigate=useNavigate()
     console.warn("data",colleagues)
     console.warn("isFetching",isFetching)
     return(
@@ -52,7 +55,23 @@ export const GlobalSearch = (props:GlobalSearchProps) => {
                   <CommandGroup heading="用户">
                       {colleagues?.map((user) => {
                           return (
-                              <ColleaguesCommandItem key={user.id} user={user} />
+                              <ColleaguesCommandItem 
+                                key={user.id} 
+                                user={user} 
+                                onSelect={()=>{
+                                    (onOpenChange ?? _onOpenChange)(false)
+                                    console.warn("user",user)
+                                    const conversationList=useIMStore.getState().conversationList
+                                    const targetConversation=conversationList.find(conversation=>conversation.channel.channelID===user.id)
+                                    if (!targetConversation){
+                                        const channel = new Channel(user.id,1)
+                                        WKSDK.shared().conversationManager.createEmptyConversation(channel)
+                                    }
+                                    navigate({
+                                        to:`/chat/${user.id}`
+                                    })
+                                }} 
+                              />
                           )
                       })}
                   </CommandGroup>
@@ -81,9 +100,10 @@ export const GlobalSearch = (props:GlobalSearchProps) => {
 }
 interface ColleaguesCommandItemProps {
     user:BaseUser
+    onSelect:()=>void
 }
 const ColleaguesCommandItem=(props:ColleaguesCommandItemProps)=>{
-    const {user}=props
+    const {user,onSelect}=props
     const organization=useMemo(()=>{
         if (user.organization){
             return  <Badge
@@ -97,7 +117,7 @@ const ColleaguesCommandItem=(props:ColleaguesCommandItemProps)=>{
         return null
     },[user.organization])
     return(
-        <CommandItem key={user.id} keywords={[user.nickname,user.username]}>
+        <CommandItem onSelect={onSelect} key={user.id} keywords={[user.nickname,user.username]}>
             <Avatar className={'size-12 rounded'} >
                 <AvatarImage src={user.avatar} />
                 <AvatarFallback>

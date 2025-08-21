@@ -1,7 +1,7 @@
 import { PullToLoadMore, type PullToLoadMoreRef } from "@/components";
 import { useChat } from "../use-chat";
-import type { ChatMessage } from "@/types";
 import { useRef } from "react";
+import type { Message } from "wukongimjssdk";
 
 const ChatContent = () => {
     const {messages,hasMore,loadMore,isFetching}=useChat()
@@ -9,9 +9,9 @@ const ChatContent = () => {
     
     const viewportRef=useRef<HTMLDivElement | null>(null)
     const listRef=useRef<PullToLoadMoreRef>(null)
-    const renderItem=(item:ChatMessage)=>{
+    const renderItem=(item:Message)=>{
         return (
-            <div key={item.id}  className="h-14">
+            <div key={item.clientMsgNo}  className="h-14">
                 {item.content}
             </div>
         )

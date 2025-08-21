@@ -5,8 +5,8 @@ import { useShallow } from "zustand/react/shallow"
 import { memo } from "react"
 
 const ConversationContainer=()=>{
+    const currentUserId = useIMStore(useShallow(state => state.currentChannelId))
     const conversationList=useIMStore(useShallow(state=>state.conversationList))
-
     if(conversationList.length===0){
         return (
             <div className="flex-1 flex items-center text-muted-foreground justify-center">
@@ -19,11 +19,18 @@ const ConversationContainer=()=>{
             <SidebarGroup className="px-3">
 
                 <SidebarGroupContent>
-                    <ConversationItem
-                        // avatar={'https://avatars.githubusercontent.com/u/61993236'}
-                        shortContext={'你好'}
-                        username={'孙悟空'}
-                        time={"2023/2/3"}/>
+                    {conversationList.map(conversation=>{
+                        
+                        return (
+                            <ConversationItem
+                                active={currentUserId === conversation.channel.channelID}
+                                key={conversation.channel.channelID}
+                                conversation={conversation}
+                                // avatar={'https://avatars.githubusercontent.com/u/61993236'}
+                               />
+                        )
+                    })}
+                    
 
                 </SidebarGroupContent>
 

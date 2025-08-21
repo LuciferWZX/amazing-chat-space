@@ -27,7 +27,7 @@ export function getAddress() {
 export function register(data: any) {
   return request.post('/register', data)
 }
-export function syncConversation<T = any>(params: {
+export function syncConversation<T = any>(data: {
   uid: string
   //  当前客户端的会话最大版本号(从保存的结果里取最大的version，如果本地没有数据则传0)，
   version?: number
@@ -36,9 +36,9 @@ export function syncConversation<T = any>(params: {
   // 每个会话获取最大的消息数量，一般为app点进去第一屏的数据
   msg_count: number
 }) {
-  return request.post<CustomResponse<T>>('/conversation/sync', params)
+  return request.post<CustomResponse<T>>(`${USER_PREFIX}/conversation/sync`, { data })
 }
-export function syncMessages<T = any>(params: {
+export function syncMessages<T = any>(data: {
   login_uid: string // 当前登录用户uid
   channel_id: string //  频道ID
   channel_type: 1 | 2 // 频道类型
@@ -47,12 +47,12 @@ export function syncMessages<T = any>(params: {
   limit: number // 消息数量限制
   pull_mode: 0 | 1 // 拉取模式 0:向下拉取 1:向上拉取
 }) {
-  return request.post<CustomResponse<T>>('/channel/messagesync', params)
+  return request.post<CustomResponse<T>>(`${USER_PREFIX}/channel/messagesync`, { data })
 }
 
 export function getUserChannelInfo(params: { uid: string }) {
   return request.get<CustomResponse<BaseUser>>(
-    `${USER_PREFIX}/user/channel/${params.uid}`,
+    `${USER_PREFIX}/channel/${params.uid}`,
   )
 }
 

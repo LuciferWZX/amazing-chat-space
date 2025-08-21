@@ -33,11 +33,14 @@ export function initDatasource(){
      * 同步会话列表
      * @returns 会话列表
      */
-    WKSDK.shared().config.provider.syncConversationsCallback=async()=>{
+    WKSDK.shared().config.provider.syncConversationsCallback=async(filter)=>{
+
         const response = await apis.syncConversation<any[]>({
             uid:WKSDK.shared().config.uid!,
             msg_count:1,
+            ...filter
         })
+       
         const result = new Array<Conversation>()
         if (response?.code ===types.ResponseCode.SUCCESS) {
            for (let i = 0; i < response.data.length; i++) {

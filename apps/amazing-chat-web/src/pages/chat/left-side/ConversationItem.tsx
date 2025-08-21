@@ -1,22 +1,28 @@
+import { useIMStore } from "@/stores";
 import {
 	Avatar,
 	AvatarFallback,
 	AvatarImage,
+	cn,
 	LucideIcons,
 } from "@amazing-chat/ui";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useLayoutEffect, useMemo } from "react";
+import WKSDK, { Conversation } from "wukongimjssdk";
+
 
 const { BellOff } = LucideIcons;
 interface ConversationItemProps {
-	avatar?: string;
-	username: string;
-	shortContext: string;
-	time: string;
+	conversation:Conversation
+	active?:boolean
 }
 const ConversationItem = (props: ConversationItemProps) => {
-	const { avatar, username, shortContext, time } = props;
+	const { conversation,active } = props;
 	const navigate = useNavigate();
+	const username = useMemo(()=>{
+		return conversation.channelInfo?.title
+	},[conversation.channelInfo])
 	const emptyAvatar = useMemo(() => {
 		return (
 			<div
@@ -24,14 +30,47 @@ const ConversationItem = (props: ConversationItemProps) => {
 					"size-full bg-primary flex items-center justify-center text-xl font-bold"
 				}
 			>
-				{username.slice(-2)}
+				{username?.slice(-2)}
 			</div>
 		);
 	}, [username]);
+	const avatar = useMemo(()=>{
+		return conversation.channelInfo?.logo
+	},[conversation.channelInfo])
+	useQuery({
+		queryKey:[`channelInfo-${conversation.channel.channelID}`],
+		queryFn:async()=>{
+			let channelInfo = WKSDK.shared().channelManager.getChannelInfo(conversation.channel)
+			if (!channelInfo) {
+				await WKSDK.shared().channelManager.fetchChannelInfo(conversation.channel)
+				channelInfo = WKSDK.shared().channelManager.getChannelInfo(conversation.channel)
+				
+			}
+			return channelInfo
+		},
+		refetchOnWindowFocus:false,
+		retry:false,
+	})
+
+	const shortContext = useMemo(()=>{
+		return conversation.lastMessage?.content.contentObj.text
+	},[conversation.lastMessage])
+	const time = useMemo(()=>{
+		return conversation.lastMessage?.timestamp
+	},[conversation.lastMessage])
 	return (
 		<a
-			onClick={() => navigate({ to: "/auth/login" })}
-			className="w-full overflow-auto hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex gap-2 border-b p-3 text-sm leading-tight whitespace-nowrap last:border-b-0"
+			onClick={()=>{
+				navigate({
+					to:`/base/chat/${conversation.channel.channelID}`
+				})
+			}}
+			className={cn(
+				"w-full rounded not-last:mb-1 cursor-pointer overflow-auto hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex gap-2 border-b p-3 text-sm leading-tight whitespace-nowrap last:border-b-0",
+				{
+					"bg-primary hover:bg-primary":active
+				}
+			)}
 		>
 			<Avatar className={"rounded-md size-12"}>
 				<AvatarImage src={avatar} />
@@ -40,9 +79,9 @@ const ConversationItem = (props: ConversationItemProps) => {
 			<div className={"flex-1 flex flex-col overflow-auto"}>
 				<div className="flex w-full items-center gap-2 overflow-auto ">
 					<span className={"flex-1 truncate text-base"}>{username}</span>{" "}
-					<span className="ml-auto text-muted-foreground">
+					{/* <span className="ml-auto text-muted-foreground">
 						<BellOff size={16} />
-					</span>
+					</span> */}
 				</div>
 				<div className="flex w-full text-base text-muted-foreground items-end mt-auto gap-2">
 					<span className="flex-1 truncate">{shortContext}</span>
