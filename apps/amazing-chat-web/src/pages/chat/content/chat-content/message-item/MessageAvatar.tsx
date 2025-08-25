@@ -1,18 +1,18 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@amazing-chat/ui"
-import {  type ReactNode } from "react"
+import type { ReactNode } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@amazing-chat/ui'
 
 interface MessageBubbleProps {
-    src?:string
-    fallback?:ReactNode
+  avatar?: string
+  fallback?: ReactNode
 }
-export const MessageAvatar = (props:MessageBubbleProps) =>{
-    const {src,fallback}=props
-    return(
-       <div className="mt-4">
-         <Avatar className={"size-8"}>
-                <AvatarImage src={src} />
-                <AvatarFallback>{fallback}</AvatarFallback>
-            </Avatar>
-       </div>
-    )
+export function MessageAvatar(props: MessageBubbleProps) {
+  const { avatar, fallback } = props
+  return (
+    <div className="mt-4">
+      <Avatar className="size-8">
+        <AvatarImage src={avatar} />
+        <AvatarFallback>{fallback}</AvatarFallback>
+      </Avatar>
+    </div>
+  )
 }
