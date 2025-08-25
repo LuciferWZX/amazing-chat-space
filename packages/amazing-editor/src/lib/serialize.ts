@@ -1,5 +1,5 @@
-import escapeHtml from 'escape-html'
 import type { Descendant } from 'slate'
+import escapeHtml from 'escape-html'
 import { Text } from 'slate'
 import { match } from 'ts-pattern'
 /**
@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
  * @param node 编辑器内容
  * @returns 序列化后的HTML
  */
-export const serialize = (node: Descendant): string => {
+export function serialize(node: Descendant): string {
   if (Text.isText(node)) {
     let string = escapeHtml(node.text)
     if (node.bold) {
@@ -30,9 +30,9 @@ export const serialize = (node: Descendant): string => {
   const children = node.children.map(n => serialize(n)).join('')
   return match(node)
     .with({ type: 'paragraph' }, () => `<p>${children}</p>`)
-    .with({ type: 'mention' }, mentionNode => {
+    .with({ type: 'mention' }, (mentionNode) => {
       const text = `${mentionNode.trigger}${mentionNode.character}`
-      return `<span class="amazing-mention" data-mention-value="${mentionNode.value}" data-label="${mentionNode.character}">${text}</span>`
+      return `<span class="amazing-mention" data-trigger="${mentionNode.trigger}" data-mention-value="${mentionNode.value}" data-label="${mentionNode.character}">${text}</span>`
     })
     .otherwise(() => children)
 }

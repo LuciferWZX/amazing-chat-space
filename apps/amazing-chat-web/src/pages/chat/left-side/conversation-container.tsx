@@ -15,7 +15,7 @@ const ConversationContainer=()=>{
         )
     }
     return(
-         <ScrollArea type={'always'} className={'h-full'}>
+         <ScrollArea type={'always'} className={'h-full'} classes={{viewport: '[&>div]:flex!'}}>
             <SidebarGroup className="px-3">
 
                 <SidebarGroupContent>

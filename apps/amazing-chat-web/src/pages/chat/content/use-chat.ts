@@ -4,6 +4,7 @@ import { useState } from "react";
 import { stores } from "@amazing-chat/shared";
 import { useIMChat } from "./chat-provider";
 import WKSDK, { Message, PullMode } from "wukongimjssdk";
+import { useIMStore } from "@/stores/useIMStore";
 const {useAppStore,useShallow}=stores
 const fakeMessageMap:Map<number,ChatMessage[]>=new Map([
     [1,[
@@ -64,15 +65,11 @@ const fakeMessageMap:Map<number,ChatMessage[]>=new Map([
 ])
 
 export const useChat = () => {
-    const userId = useAppStore(useShallow(state=>state.user!.id))
     const {conversation}=useIMChat()
-    //当前页码
-    const [page,setPage]=useState<number>(1)
     //后续是否还有更多消息
     const [hasMore,setHasMore]=useState(false)
     //消息列表
-    const [messages,setMessages]=useState<Message[]>([])
-
+    const messages=useIMStore(useShallow(state=>state.chatMessageMap.get(conversation?.channel.channelID||"")||[]))
     const {isPending,isFetching}=useQuery({
         queryKey:[`messages-${conversation?.channel.channelID}`],
         queryFn:async()=>{
@@ -92,7 +89,11 @@ export const useChat = () => {
             endMessageSeq:0
            })
        console.warn("remoteMessages:",remoteMessages);
-           
+       useIMStore.setState(oldState=>{
+        return {
+            chatMessageMap:oldState.chatMessageMap.set(conversation.channel.channelID,remoteMessages)
+        }
+       })
        return remoteMessages
     }
     const loadMore=async()=>{

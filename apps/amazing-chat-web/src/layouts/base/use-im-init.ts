@@ -64,6 +64,12 @@ const useIMInit = () => {
 	}
 	function listenMessage(message:Message){
 		console.warn("[消息]",message);
+		useIMStore.setState(oldState=>{
+			const  chatMessages = oldState.chatMessageMap.get(message.channel.channelID)
+			return {
+				chatMessageMap:oldState.chatMessageMap.set(message.channel.channelID,chatMessages?[...chatMessages,message]:[message])
+			}
+		})
 	}
 	function listen(packet:SendackPacket){
 		console.warn("[消息clientSeq]",packet.clientSeq);

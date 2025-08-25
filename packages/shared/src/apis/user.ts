@@ -49,7 +49,11 @@ export function syncMessages<T = any>(data: {
 }) {
   return request.post<CustomResponse<T>>(`${USER_PREFIX}/channel/messagesync`, { data })
 }
-
+/**
+ * @description 获取用户频道信息
+ * @param params
+ * @returns
+ */
 export function getUserChannelInfo(params: { uid: string }) {
   return request.get<CustomResponse<BaseUser>>(
     `${USER_PREFIX}/channel/${params.uid}`,
@@ -61,4 +65,20 @@ export function getUserChannelInfo(params: { uid: string }) {
  */
 export function getColleagues() {
   return request.get<CustomResponse<BaseUser[]>>(`${USER_PREFIX}/colleagues`)
+}
+export function sendMessage(data: {
+  header: {
+    // 消息头
+    no_persist: 0 | 1 // 是否不存储消息 0.存储 1.不存储
+    red_dot: 0 | 1 // 是否显示红点计数，0.不显示 1.显示
+    sync_once: 0 | 1 // 是否是写扩散，这里一般是0，只有cmd消息才是1
+  }
+  from_uid: string // 发送者uid
+  stream_no: string // 流式消息编号，如果是流式消息，需要指定，否则为空
+  channel_id: string // 接收频道ID 如果channel_type=1 channel_id为个人uid 如果channel_type=2 channel_id为群id
+  channel_type: 1 | 2 // 接收频道类型  1.个人频道 2.群聊频道
+  payload: string // 消息，base64编码，消息格式参考下面 【payload 内容参考】的链接
+  subscribers: string[] // 订阅者 subscribers和channel_id二选一
+}) {
+  return request.post<CustomResponse<null>>(`${USER_PREFIX}/message/send`, { data })
 }

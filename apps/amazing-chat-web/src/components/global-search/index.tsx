@@ -22,8 +22,6 @@ export const GlobalSearch = (props:GlobalSearchProps) => {
     }
     const {colleagues,isFetching}=useMyColleagues({enabled:open ?? visible})
     const navigate=useNavigate()
-    console.warn("data",colleagues)
-    console.warn("isFetching",isFetching)
     return(
       <CommandDialog
           open={open ?? visible}
@@ -68,7 +66,8 @@ export const GlobalSearch = (props:GlobalSearchProps) => {
                                         WKSDK.shared().conversationManager.createEmptyConversation(channel)
                                     }
                                     navigate({
-                                        to:`/chat/${user.id}`
+                                        to:`/base/chat/${user.id}`,
+                                        replace:true
                                     })
                                 }} 
                               />

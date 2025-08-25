@@ -20,7 +20,7 @@
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
     "skipLibCheck": true,
-    "noExplicitAny": false,
+    "noImplicitAny": false,
     "noUncheckedSideEffectImports": true
   }
 }

@@ -1,4 +1,5 @@
-import { useIMStore } from "@/stores";
+
+import { isTextContent } from "@/utils/is";
 import {
 	Avatar,
 	AvatarFallback,
@@ -8,8 +9,11 @@ import {
 } from "@amazing-chat/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useLayoutEffect, useMemo } from "react";
-import WKSDK, { Conversation } from "wukongimjssdk";
+import { useMemo } from "react";
+import WKSDK, { Conversation, MessageContent } from "wukongimjssdk";
+import { getTimeStringAutoShort } from "@/utils/format";
+import { AmazingEditorManager } from "@amazing-chat/editor";
+import { InstanceContainer } from "@/components";
 
 
 const { BellOff } = LucideIcons;
@@ -19,6 +23,8 @@ interface ConversationItemProps {
 }
 const ConversationItem = (props: ConversationItemProps) => {
 	const { conversation,active } = props;
+	console.warn("conversation",conversation);
+	
 	const navigate = useNavigate();
 	const username = useMemo(()=>{
 		return conversation.channelInfo?.title
@@ -53,11 +59,26 @@ const ConversationItem = (props: ConversationItemProps) => {
 	})
 
 	const shortContext = useMemo(()=>{
-		return conversation.lastMessage?.content.contentObj.text
+		const lastMessage = conversation.lastMessage
+		if (!lastMessage) {
+			return null
+		}
+		const content = lastMessage.content as MessageContent
+		if (isTextContent(content)) {
+			const pureText = AmazingEditorManager.getTextFromHtml(content.text || '')
+			return pureText
+		}
+		return content.conversationDigest
 	},[conversation.lastMessage])
 	const time = useMemo(()=>{
-		return conversation.lastMessage?.timestamp
-	},[conversation.lastMessage])
+		const timestamp = conversation.lastMessage?.timestamp
+		if (!timestamp) {
+			return null
+		}
+		return(
+			<InstanceContainer timestamp={timestamp * 1000} />
+		)
+	},[conversation.lastMessage?.timestamp])
 	return (
 		<a
 			onClick={()=>{
@@ -68,7 +89,7 @@ const ConversationItem = (props: ConversationItemProps) => {
 			className={cn(
 				"w-full rounded not-last:mb-1 cursor-pointer overflow-auto hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex gap-2 border-b p-3 text-sm leading-tight whitespace-nowrap last:border-b-0",
 				{
-					"bg-primary hover:bg-primary":active
+					"bg-primary/20 hover:bg-primary":active
 				}
 			)}
 		>
@@ -85,7 +106,7 @@ const ConversationItem = (props: ConversationItemProps) => {
 				</div>
 				<div className="flex w-full text-base text-muted-foreground items-end mt-auto gap-2">
 					<span className="flex-1 truncate">{shortContext}</span>
-					<span className="ml-auto text-xs ">{time}</span>
+					<span className="text-xs ">{time}</span>
 				</div>
 			</div>
 			{/*<div className="flex w-full items-center gap-2">*/}

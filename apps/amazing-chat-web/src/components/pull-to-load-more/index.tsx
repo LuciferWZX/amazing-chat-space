@@ -10,6 +10,7 @@ interface PullToLoadMoreProps<T> {
     viewportRef?: React.RefObject<HTMLDivElement | null>
     preloadThreshold?: number // 预加载阈值，距离顶部多少px时开始加载
     ref?:React.RefObject<PullToLoadMoreRef|null>
+    footer?:ReactNode
 }
 export interface PullToLoadMoreRef {
     scrollBottom:()=>void
@@ -22,7 +23,8 @@ export const PullToLoadMore = <T,>(props: PullToLoadMoreProps<T>) => {
         onLoadMore, 
         viewportRef,
         preloadThreshold = 100,
-        ref:componentRef
+        ref:componentRef,
+        footer
     } = props
    
     const [isLoading, setIsLoading] = useState(false)
@@ -136,6 +138,7 @@ export const PullToLoadMore = <T,>(props: PullToLoadMoreProps<T>) => {
                 </div>
             )}
             {list.map(renderItem)}
+            {footer}
         </ScrollArea>
     )
 }

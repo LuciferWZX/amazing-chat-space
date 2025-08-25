@@ -1,10 +1,13 @@
 import { AmazingEditor, AmazingEditorManager } from "@amazing-chat/editor"
 import type { RefObject } from "react"
+import WKSDK, { MessageText, Setting } from "wukongimjssdk"
+import { useIMChat } from "../chat-provider"
 interface ChatInputProps {
     expandContainerRef:RefObject<HTMLElement | null>
 }
 const ChatInput = (props:ChatInputProps) => {
     const {expandContainerRef}=props
+    const {conversation}=useIMChat()
     return(
          <div className={'relative'}>
               <AmazingEditor
@@ -12,9 +15,14 @@ const ChatInput = (props:ChatInputProps) => {
                   instanceId={"happy"}
 
                   onSendMessage={(message) => {
-                      console.warn("message", message)
-                      const htmlStr = AmazingEditorManager.serialize(message.value)
-                      console.warn("htmlStr", htmlStr)
+                      if (conversation) {
+                        const htmlStr = AmazingEditorManager.serialize(message.value)
+                        console.warn("htmlStr", htmlStr)
+                        const content = new MessageText(htmlStr)
+                        WKSDK.shared().chatManager.send(content,conversation.channel)
+                      }
+                      
+
                   }}
                   mentions={[
                       {

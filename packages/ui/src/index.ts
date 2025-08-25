@@ -1,3 +1,5 @@
+import './styles/globals.css'
+
 export * from './components/base-form-iItem'
 export * from './components/input'
 export * from './components/tooltip'

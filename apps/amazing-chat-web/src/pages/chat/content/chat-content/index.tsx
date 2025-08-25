@@ -2,18 +2,19 @@ import { PullToLoadMore, type PullToLoadMoreRef } from "@/components";
 import { useChat } from "../use-chat";
 import { useRef } from "react";
 import type { Message } from "wukongimjssdk";
+import MessageItem from "./message-item";
+import { useIMChat } from "../chat-provider";
 
 const ChatContent = () => {
     const {messages,hasMore,loadMore,isFetching}=useChat()
-
-    
+    const {user}=useIMChat()
+    console.warn("messages",messages)
     const viewportRef=useRef<HTMLDivElement | null>(null)
     const listRef=useRef<PullToLoadMoreRef>(null)
     const renderItem=(item:Message)=>{
         return (
-            <div key={item.clientMsgNo}  className="h-14">
-                {item.content}
-            </div>
+            <MessageItem key={item.clientMsgNo} message={item} user={user} />
+                
         )
     }
 
@@ -29,6 +30,7 @@ const ChatContent = () => {
                 viewportRef={viewportRef}
                 renderItem={renderItem}
                 onLoadMore={loadMore}
+                footer={<div className={'h-5'} />}
             />
         )}
             

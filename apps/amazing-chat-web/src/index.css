@@ -1,4 +1,10 @@
 @import "tailwindcss";
 @import "@amazing-chat/ui/globals.css";
-@source "../node_modules/@amazing-chat/ui/dist/index.js";
+
+
+@layer base {
+  .amazing-mention {
+    @apply text-[var(--primary)];
+  }
+}
 

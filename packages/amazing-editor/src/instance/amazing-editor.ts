@@ -5,6 +5,7 @@ import { events } from '@amazing-chat/shared'
 import { Element, Node, Text, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { match } from 'ts-pattern'
+import { deserialize } from '@/lib/deserialize'
 import { serialize } from '@/lib/serialize'
 import { useEditorStore } from '@/stores/use-editor-store'
 
@@ -27,12 +28,32 @@ export class AmazingEditorManager {
   }
 
   /**
+   * 反序列化HTML为编辑器内容
+   * @param html HTML字符串
+   * @returns 编辑器内容
+   */
+  static deserialize(html: string): Descendant[] {
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    return deserialize(document.body) as Descendant[]
+  }
+
+  /**
    * 序列化编辑器内容为HTML
    * @param value 编辑器内容
    * @returns 序列化后的HTML
    */
   static serialize(value: Descendant[]): string {
     return value.map(v => serialize(v)).join('\n')
+  }
+
+  /**
+   * 从HTML中获取纯文本
+   * @param html HTML字符串
+   * @returns 纯文本
+   */
+  static getTextFromHtml(html: string): string {
+    const value = this.deserialize(html)
+    return this.getText(value)
   }
 
   /**

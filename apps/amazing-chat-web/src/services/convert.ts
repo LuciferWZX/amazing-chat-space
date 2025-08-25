@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import WKSDK, { Channel, Conversation, MessageStatus, Message, Setting, MessageExtra, MessageContentType } from "wukongimjssdk";
 import BigNumber from "bignumber.js";
-// import { Buffer } from 'buffer';
+import { Buffer } from 'buffer';
 export class Convert{
     /**
      * 将消息信息转换为Message
@@ -45,23 +45,26 @@ export class Convert{
        
         let contentType = 0
         try {
-            let contentObj = null
+            let contentObj:any = null
             const payload = msgMap["payload"]
             if(payload && payload!=="") {
+                // 使用浏览器原生API替代Buffer
+                
                 const decodedBuffer = Buffer.from(payload, 'base64')
                  contentObj = JSON.parse(decodedBuffer.toString('utf8'))
+                
+                 
                 if (contentObj) {
                     contentType = contentObj.type
                 }
             }
-           
             const messageContent = WKSDK.shared().getMessageContent(contentType)
             if (contentObj) {
                 messageContent.decode(this.stringToUint8Array(JSON.stringify(contentObj)))
             }
             message.content = messageContent
         }catch(e) {
-            console.log(e)
+            console.warn("不存在contentType",e)
             // 如果报错，直接设置为unknown  
             const messageContent = WKSDK.shared().getMessageContent(MessageContentType.unknown)
             message.content = messageContent
@@ -134,12 +137,8 @@ export class Convert{
      * @returns Uint8Array
      */
     static stringToUint8Array(str: string): Uint8Array {
-        const newStr = decodeURIComponent(str)
-        const arr = [];
-        for (let i = 0, j = newStr.length; i < j; ++i) {
-            arr.push(newStr.charCodeAt(i));
-        }
-        const tmpUint8Array = new Uint8Array(arr);
-        return tmpUint8Array
+        // 直接使用 TextEncoder 将字符串转换为 Uint8Array，避免 URI 解码问题
+        const encoder = new TextEncoder();
+        return encoder.encode(str);
     }
 }
