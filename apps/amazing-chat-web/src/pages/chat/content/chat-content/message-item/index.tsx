@@ -13,9 +13,12 @@ interface MessageItemProps {
     message:Message
     className?:string
     user:AppUser|undefined
+    closeToPreviousMessage?:boolean
+    closeToNextMessage?:boolean
 }
 const MessageItem = (props:MessageItemProps) => {
-    const {message,className,user} = props
+    const {message,className,user,closeToPreviousMessage,closeToNextMessage} = props
+   
     const isFromMe=useMemo(()=>{
         return message.fromUID===user?.id
     },[message.fromUID,user?.id])
@@ -35,15 +38,28 @@ const MessageItem = (props:MessageItemProps) => {
         )
     },[message.timestamp])
     return(
-        <div className={cn("group/message",className)}>
+        <div className={cn("group/message pt-0.5",className)}>
             <div className={cn("flex gap-2")}>
-                <MessageAvatar />
+                <div className={cn(
+                    "flex-shrink-0 w-10",
+                    {
+                        "flex items-center justify-center":closeToPreviousMessage
+                    }
+                )}>
+                    {closeToPreviousMessage?null:<MessageAvatar />}
+                    {closeToPreviousMessage?time:null}
+                </div>
                 <MessageContainer>
-                    {time}
+                    {closeToPreviousMessage?null:time}
                     <div className="flex">
-                        <MessageBubble className={cn({
-                            "bg-primary/20":isFromMe
-                        })}>
+                        <MessageBubble 
+                            className={cn('rounded-lg',{
+                                "bg-primary/20":isFromMe,
+                                "rounded-tl-none!":closeToPreviousMessage && isFromMe,
+                                "rounded-bl-none!":closeToNextMessage && isFromMe,
+                                "rounded-tr-none!":closeToPreviousMessage && !isFromMe,
+                                "rounded-br-none!":closeToNextMessage && !isFromMe
+                            })}>
                             <RenderWithMention html={content} />
                         </MessageBubble>
                         <MessageSectionRight />

@@ -8,7 +8,7 @@ interface MessageBubbleProps {
 export const MessageBubble = (props:MessageBubbleProps) =>{
     const {children,className}=props
     return(
-        <div className={cn("rounded-lg p-2",className)}>
+        <div className={cn("py-2.5 px-3",className)}>
             {children}
         </div>
     )

@@ -114,3 +114,9 @@ const _formatDate = (date:Date, fmt:string) => {
     }
     return fmt;
 };
+//判断两个时间相差是不是在五分钟之内
+export function isCloseToPreviousMessage(timestamp:number,previousTimestamp:number){
+    const deltaTime = (timestamp - previousTimestamp);
+    console.warn("deltaTime",deltaTime)
+    return deltaTime < 5 * 60 * 1000
+}

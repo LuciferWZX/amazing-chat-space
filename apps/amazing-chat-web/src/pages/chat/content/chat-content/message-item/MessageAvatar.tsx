@@ -8,11 +8,11 @@ interface MessageBubbleProps {
 export const MessageAvatar = (props:MessageBubbleProps) =>{
     const {src,fallback}=props
     return(
-        <div>
-            <Avatar className={"size-8"}>
+       <div className="mt-4">
+         <Avatar className={"size-8"}>
                 <AvatarImage src={src} />
                 <AvatarFallback>{fallback}</AvatarFallback>
             </Avatar>
-        </div>
+       </div>
     )
 }
