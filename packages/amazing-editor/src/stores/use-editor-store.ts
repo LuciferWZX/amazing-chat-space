@@ -24,6 +24,7 @@ export interface EditorInstance {
 interface EditorStoreState {
   instances: Map<string, EditorInstance>
   emojis: EmojiMap
+  arrEmojis: Array<[string, Emoji[]]>
 }
 interface Actions {
   initInstance: (editor: Editor, id: string, value?: Descendant[]) => void
@@ -33,7 +34,7 @@ interface Actions {
 function initEmojis() {
   const emojisMap = new Map<string, Emoji[]>()
   // const categories = ['Smileys & Emotion', 'People & Body', 'Animals & Nature', 'Food & Drink', 'Travel & Places', 'Activities', 'Objects', 'Symbols', 'Flags']
-  const subCategory = ['face-smiling', 'face-affection', 'face-tongue', 'face-hand', 'face-neutral-skeptical', 'face-sleepy', 'face-unwell', 'face-hat', 'face-glasses', 'face-concerned', 'face-negative', 'face-costume', 'cat-face', 'monkey-face', 'animal-mammal', 'animal-bird', 'animal-amphibian', 'animal-reptile', 'animal-marine', 'animal-bug', 'plant-flower', 'plant-other', 'food-fruit', 'food-vegetable', 'food-prepared', 'food-asian', 'food-sweet', 'drink', 'dishware', 'food-other', 'course', 'event', 'place-building', 'place-geographic', 'place-other', 'transport-ground', 'transport-water', 'transport-air', 'hotel', 'time', 'sky & weather', 'event', 'award-medal', 'sport', 'game', 'arts & crafts', 'clothing', 'sound', 'music', 'musical-instrument', 'phone', 'computer', 'light & video', 'book-paper', 'money', 'mail', 'writing', 'office', 'lock', 'tool', 'science', 'medical', 'household', 'other-object', 'transport-sign', 'warning', 'arrow', 'religion', 'zodiac', 'av-symbol', 'gender', 'math', 'punctuation', 'currency', 'other-symbol', 'keycap', 'alphanumeric', 'geometric', 'flag-flag', 'country-flag', 'transport-other', 'other-other']
+  const subCategory = ['face-smiling', 'face-affection', 'face-tongue', 'face-hand', 'face-neutral-skeptical', 'face-sleepy', 'face-unwell', 'face-hat', 'face-glasses', 'face-concerned']
   subCategory.forEach((category) => {
     emojisMap.set(category, [])
   })
@@ -42,7 +43,8 @@ function initEmojis() {
     .forEach((emoji: any) => {
       const subCategory = emoji.subcategory
       if (!emojisMap.has(subCategory)) {
-        emojisMap.set(subCategory, [])
+        // emojisMap.set(subCategory, [])
+        return
       }
       emojisMap.get(subCategory)?.push({
         shortName: emoji.short_name as string,
@@ -57,9 +59,11 @@ function initEmojis() {
 
   return emojisMap
 }
+const emojis = initEmojis()
 const initialState: EditorStoreState = {
   instances: new Map(),
-  emojis: initEmojis(),
+  emojis,
+  arrEmojis: Array.from(emojis.entries()),
 }
 export const useEditorStore = create<EditorStoreState & Actions>((set, get) => ({
   ...initialState,

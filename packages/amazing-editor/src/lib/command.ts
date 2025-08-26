@@ -58,7 +58,7 @@ export const EditorCommand = {
   },
   insertEmoji(
     editor: Editor,
-    at: Range,
+    at: Range | null,
     emojiParams: {
       url?: string
       unified: string
@@ -74,7 +74,7 @@ export const EditorCommand = {
     }
     HistoryEditor.withNewBatch(editor, () => {
       // 如果是范围则定位到最后一个节点
-      if (Range.isCollapsed(at)) {
+      if (!at || Range.isExpanded(at)) {
         const end = Editor.end(editor, [])
         Transforms.select(editor, end)
       }

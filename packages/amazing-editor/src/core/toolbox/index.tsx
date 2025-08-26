@@ -73,7 +73,6 @@ function Toolbox(props: ToolboxProps) {
         )
         if (tool.key === 'face') {
           return (
-            // 关闭不销毁
             <Popover key={tool.key} open={emojiPickerVisible} onOpenChange={setEmojiPickerVisible}>
               <ShadTooltip>
                 <TooltipTrigger asChild={true}>
@@ -89,10 +88,12 @@ function Toolbox(props: ToolboxProps) {
                 <EmojiPicker
                   onSelect={(emoji) => {
                     setEmojiPickerVisible(false)
-                    EditorCommand.insertEmoji(editor, editor.selection, {
-                      unified: emoji.unified,
-                      emoji: emoji.emoji,
-                      url: emoji.url,
+                    requestAnimationFrame(() => {
+                      EditorCommand.insertEmoji(editor, editor.selection, {
+                        unified: emoji.unified,
+                        emoji: emoji.emoji,
+                        url: emoji.url,
+                      })
                     })
                   }}
                 />

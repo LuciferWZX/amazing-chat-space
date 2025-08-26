@@ -1,3 +1,4 @@
+import type { HistoryEditor } from 'slate-history'
 import type { ReactEditor } from 'slate-react'
 
 interface CustomText {
@@ -37,7 +38,7 @@ interface MentionElement {
 type CustomElement = ParagraphElement | MentionElement | EmojiElement
 declare module 'slate' {
   interface CustomTypes {
-    Editor: CustomEditor & ReactEditor
+    Editor: ReactEditor & HistoryEditor
     Element: CustomElement
     Text: CustomText
   }
