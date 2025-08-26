@@ -5,7 +5,7 @@ import { Button, LucideIcons } from '@amazing-chat/ui'
 import { useRef, useState } from 'react'
 import { ChannelTypePerson } from 'wukongimjssdk'
 import { PullToLoadMore } from '@/components'
-import { isCloseToPreviousMessage } from '@/utils/format'
+import { isCloseToPreviousMessage, isSameDay } from '@/utils/format'
 import { useIMChat } from '../chat-provider'
 import { useChat } from '../use-chat'
 import MessageItem from './message-item'
@@ -25,6 +25,9 @@ function ChatContent() {
     if (message && !isLimit) {
       listRef.current?.scrollBottom?.()
     }
+  })
+  useEventBus(`scroll-to-bottom`, () => {
+    listRef.current?.scrollBottom?.()
   })
   const getFallback = (nickname: string) => {
     return nickname.slice(0, 2)
@@ -68,10 +71,11 @@ function ChatContent() {
     // 判断上一个消息的
     const closeToPreviousMessage = prevTimestamp ? isCloseToPreviousMessage(item.timestamp * 1000, prevTimestamp * 1000) && isSamePreviousUser : false
     // 判断下一个消息的
-    const closeToNextMessage = nextTimestamp ? isCloseToPreviousMessage(item.timestamp * 1000, nextTimestamp * 1000) && isSameNextUser : false
-
+    const closeToNextMessage = nextTimestamp ? isCloseToPreviousMessage(nextTimestamp * 1000, item.timestamp * 1000) && isSameNextUser : false
+    const showDate = index > 0 ? !isSameDay(item.timestamp * 1000, messages[index - 1].timestamp * 1000) : true
     return (
       <MessageItem
+        showDate={showDate}
         key={item.clientMsgNo}
         clientUser={user!}
         message={item}

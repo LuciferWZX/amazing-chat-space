@@ -1,6 +1,7 @@
 import type { ChannelInfo, CMDContent, Conversation, Message, SendackPacket } from 'wukongimjssdk'
 import { events, instants, stores, types } from '@amazing-chat/shared'
 import { getRouteApi } from '@tanstack/react-router'
+import { produce } from 'immer'
 import { useLayoutEffect } from 'react'
 import { match } from 'ts-pattern'
 import WKSDK, { ConnectStatus, ConversationAction, MessageStatus } from 'wukongimjssdk'
@@ -155,7 +156,9 @@ function useIMInit() {
           return {
             conversationList: oldState.conversationList.map((item) => {
               if (item.channel.channelID === conversation.channel.channelID) {
-                return conversation
+                return produce(item, (draft) => {
+                  draft.lastMessage = conversation.lastMessage
+                })
               }
               return item
             }),

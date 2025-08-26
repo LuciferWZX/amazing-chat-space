@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 export function getTimeStringAutoShort(timestamp: number, mustIncludeTime: boolean) {
   // 当前时间
   const currentDate = new Date()
@@ -117,8 +119,23 @@ function _formatDate(date: Date, fmt: string) {
   }
   return fmt
 }
-// 判断两个时间相差是不是在五分钟之内
+/**
+ * 判断两个时间相差是不是在五分钟之内
+ * @param timestamp 时间戳
+ * @param previousTimestamp 前一个时间戳
+ * @returns 是否在五分钟之内
+ */
 export function isCloseToPreviousMessage(timestamp: number, previousTimestamp: number) {
   const deltaTime = (timestamp - previousTimestamp)
   return deltaTime < 5 * 60 * 1000
+}
+/**
+ * 判断两个时间是否是同一天
+ * @param timestamp 时间戳
+ * @param previousTimestamp 前一个时间戳
+ * @returns 是否是同一天
+ */
+export function isSameDay(timestamp: number, previousTimestamp: number) {
+  // 用dayjs判断两个时间是否是同一天
+  return dayjs(timestamp).isSame(dayjs(previousTimestamp), 'day')
 }

@@ -57,6 +57,12 @@ importers:
       '@amazing-chat/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@emoji-mart/data':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@emoji-mart/react':
+        specifier: ^1.1.1
+        version: 1.1.1(emoji-mart@5.6.0)(react@19.1.1)
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.13.0)(react@19.1.1)
@@ -90,12 +96,18 @@ importers:
       dompurify:
         specifier: ^3.2.6
         version: 3.2.6
+      emoji-mart:
+        specifier: ^5.6.0
+        version: 5.6.0
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
       html-react-parser:
         specifier: ^5.2.6
         version: 5.2.6(@types/react@19.1.9)(react@19.1.1)
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
       pinyin-pro:
         specifier: ^3.27.0
         version: 3.27.0
@@ -148,12 +160,21 @@ importers:
       '@amazing-chat/ui':
         specifier: workspace:*
         version: link:../ui
+      '@emoji-mart/data':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@emoji-mart/react':
+        specifier: ^1.1.1
+        version: 1.1.1(emoji-mart@5.6.0)(react@19.1.1)
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.13.0)(react@19.1.1)
       '@tailwindcss/postcss':
         specifier: ^4.1.11
         version: 4.1.11
+      emoji-mart:
+        specifier: ^5.6.0
+        version: 5.6.0
       escape-html:
         specifier: ^1.0.3
         version: 1.0.3
@@ -191,6 +212,9 @@ importers:
         specifier: ^5.0.7
         version: 5.0.7(@types/react@19.1.9)(immer@10.1.1)(react@19.1.1)(use-sync-external-store@1.5.0(react@19.1.1))
     devDependencies:
+      '@types/emoji-mart':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@types/escape-html':
         specifier: ^1.0.4
         version: 1.0.4
@@ -588,6 +612,15 @@ packages:
 
   '@date-fns/tz@1.2.0':
     resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
+
+  '@emoji-mart/data@1.2.1':
+    resolution: {integrity: sha512-no2pQMWiBy6gpBEiqGeU77/bFejDqUTRY7KX+0+iur13op3bqUsXdnwoZs6Xb1zbv0gAj5VvS1PWoUUckSr5Dw==}
+
+  '@emoji-mart/react@1.1.1':
+    resolution: {integrity: sha512-NMlFNeWgv1//uPsvLxvGQoIerPuVdXwK/EUek8OOkJ6wVOWPUizRBJU0hDqWZCOROVpfBgCemaC3m6jDOXi03g==}
+    peerDependencies:
+      emoji-mart: ^5.2
+      react: ^16.8 || ^17 || ^18
 
   '@es-joy/jsdoccomment@0.50.2':
     resolution: {integrity: sha512-YAdE/IJSpwbOTiaURNCKECdAwqrJuFiZhylmesBcIRawtYKnBR2wxPhoIewMg+Yu+QuYvHfJNReWpoxGBKOChA==}
@@ -1908,6 +1941,10 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+  '@types/emoji-mart@5.3.0':
+    resolution: {integrity: sha512-H1fl4YVSqJERHbn1ZhTgzb/iqha8QcJANvYXI8S1CpDYn82Kq4LdkKgR20OCxe9324XoMGuvSP8HsSU633/e4g==}
+    deprecated: This is a stub types definition. emoji-mart provides its own type definitions, so you do not need this installed.
+
   '@types/escape-html@1.0.4':
     resolution: {integrity: sha512-qZ72SFTgUAZ5a7Tj6kf2SHLetiH5S6f8G5frB2SPQ3EyF02kxdyBFf4Tz4banE3xCgGnKgWLt//a6VuYHKYJTg==}
 
@@ -2497,6 +2534,9 @@ packages:
 
   embla-carousel@8.6.0:
     resolution: {integrity: sha512-SjWyZBHJPbqxHOzckOfo8lHisEaJWmwd23XppYFYVh10bU66/Pn5tkVkbkCMZVdbUE5eTCI2nD8OyIP4Z+uwkA==}
+
+  emoji-mart@5.6.0:
+    resolution: {integrity: sha512-eJp3QRe79pjwa+duv+n7+5YsNhRcMl812EcFVwrnRvYKoNPoQb5qxU8DG6Bgwji0akHdp6D4Ln6tYLG58MFSow==}
 
   emoji-regex@10.4.0:
     resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
@@ -4663,6 +4703,13 @@ snapshots:
 
   '@date-fns/tz@1.2.0': {}
 
+  '@emoji-mart/data@1.2.1': {}
+
+  '@emoji-mart/react@1.1.1(emoji-mart@5.6.0)(react@19.1.1)':
+    dependencies:
+      emoji-mart: 5.6.0
+      react: 19.1.1
+
   '@es-joy/jsdoccomment@0.50.2':
     dependencies:
       '@types/estree': 1.0.8
@@ -5977,6 +6024,10 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
+  '@types/emoji-mart@5.3.0':
+    dependencies:
+      emoji-mart: 5.6.0
+
   '@types/escape-html@1.0.4': {}
 
   '@types/estree@1.0.8': {}
@@ -6608,6 +6659,8 @@ snapshots:
       embla-carousel: 8.6.0
 
   embla-carousel@8.6.0: {}
+
+  emoji-mart@5.6.0: {}
 
   emoji-regex@10.4.0: {}
 

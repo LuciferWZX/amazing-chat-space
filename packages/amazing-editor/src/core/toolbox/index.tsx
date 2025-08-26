@@ -1,9 +1,12 @@
 import type { ToolItem } from '@/types'
-import { cn, LucideIcons, Tooltip } from '@amazing-chat/ui'
-import { useMemo } from 'react'
+import { cn, LucideIcons, Popover, PopoverContent, PopoverTrigger, ShadTooltip, Tooltip, TooltipContent, TooltipTrigger } from '@amazing-chat/ui'
+import { useMemo, useState } from 'react'
+import { useSlateStatic } from 'slate-react'
 import { useShallow } from 'zustand/shallow'
 import { AmazingEditorManager } from '@/index.ts'
+import { EditorCommand } from '@/lib/command.ts'
 import { useEditorStore } from '@/stores/use-editor-store.ts'
+import EmojiPicker from './emoji-picker.tsx'
 
 const { Smile, Image, MoveDiagonal } = LucideIcons
 
@@ -12,6 +15,8 @@ interface ToolboxProps {
 }
 function Toolbox(props: ToolboxProps) {
   const { instanceId } = props
+  const editor = useSlateStatic()
+  const [emojiPickerVisible, setEmojiPickerVisible] = useState(false)
   const { isExpand } = useEditorStore(
     useShallow((state) => {
       return {
@@ -19,6 +24,7 @@ function Toolbox(props: ToolboxProps) {
       }
     }),
   )
+
   const tools: ToolItem[] = useMemo(() => {
     return [
       {
@@ -44,11 +50,17 @@ function Toolbox(props: ToolboxProps) {
     ]
   }, [instanceId, isExpand])
   return (
-    <header className="flex gap-1">
-      {tools.filter(item => item.hidden !== true).map(tool => (
-        <Tooltip asChild={true} key={tool.key} tips={tool.label}>
-          <button
-            type="button"
+    <header
+      className="flex gap-1"
+      onClick={(evt) => {
+        evt.stopPropagation()
+      }}
+    >
+      {tools.filter(item => item.hidden !== true).map((tool) => {
+        const base = (
+
+          <span
+            // type="button"
             onClick={tool.onClick}
             className={cn(
               'bg-input cursor-pointer text-muted-foreground/80 hover:bg-accent hover:text-accent-foreground  focus-visible:ring-ring/50 inline-flex size-6 items-center justify-center rounded text-sm transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
@@ -56,9 +68,44 @@ function Toolbox(props: ToolboxProps) {
             aria-label={tool.label}
           >
             <tool.icon className="size-4" />
-          </button>
-        </Tooltip>
-      ))}
+          </span>
+
+        )
+        if (tool.key === 'face') {
+          return (
+            // 关闭不销毁
+            <Popover key={tool.key} open={emojiPickerVisible} onOpenChange={setEmojiPickerVisible}>
+              <ShadTooltip>
+                <TooltipTrigger asChild={true}>
+                  <PopoverTrigger asChild={true}>
+                    {base}
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {tool.label}
+                </TooltipContent>
+              </ShadTooltip>
+              <PopoverContent forceMount={true} className="p-0 w-[inner]">
+                <EmojiPicker
+                  onSelect={(emoji) => {
+                    setEmojiPickerVisible(false)
+                    EditorCommand.insertEmoji(editor, editor.selection, {
+                      unified: emoji.unified,
+                      emoji: emoji.emoji,
+                      url: emoji.url,
+                    })
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          )
+        }
+        return (
+          <Tooltip key={tool.key} tips={tool.label}>
+            {base}
+          </Tooltip>
+        )
+      })}
     </header>
   )
 }

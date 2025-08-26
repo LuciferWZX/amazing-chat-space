@@ -87,7 +87,7 @@ function ExpandBottomDrawer(props: ExpandBottomDrawerProps) {
           }}
           className="absolute z-51 bottom-0 left-0 right-0 h-0 bg-background border rounded-t-xl shadow-lg"
         >
-          <div className="pt-2.5 h-full flex flex-col">
+          <div className="pt-2.5 h-full flex flex-col overflow-x-hidden">
             <div className="pb-3 px-2">
               <ExpandDrawerToolbar instanceId={instanceId} />
             </div>

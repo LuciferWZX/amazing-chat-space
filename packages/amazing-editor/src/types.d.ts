@@ -20,6 +20,13 @@ interface ParagraphElement {
   type: 'paragraph'
   children: CustomText[]
 }
+interface EmojiElement {
+  type: 'emoji'
+  unified: string
+  url?: string
+  emoji: string
+  children: CustomText[]
+}
 interface MentionElement {
   type: 'mention'
   trigger: string
@@ -27,7 +34,7 @@ interface MentionElement {
   children: CustomText[]
   value: string
 }
-type CustomElement = ParagraphElement | MentionElement
+type CustomElement = ParagraphElement | MentionElement | EmojiElement
 declare module 'slate' {
   interface CustomTypes {
     Editor: CustomEditor & ReactEditor

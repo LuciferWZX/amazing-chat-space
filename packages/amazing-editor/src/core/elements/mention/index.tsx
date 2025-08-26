@@ -25,20 +25,22 @@ export function MentionRenderElement(props: MentionElementProps) {
       {/* Prevent Chromium from interrupting IME when moving the cursor */}
       {/* 1. span + inline-block 2. div + contenteditable=false */}
       <span className="block" contentEditable={false}>
-        {IS_MAC ? (
-          <Fragment>
-            {children}
-            {element.trigger}
-            {element.character}
-          </Fragment>
-        ) : (
+        {IS_MAC
+          ? (
+              <Fragment>
+                {children}
+                {element.trigger}
+                {element.character}
+              </Fragment>
+            )
+          : (
         // Others like Android https://github.com/ianstormtaylor/slate/pull/5360
-          <Fragment>
-            {element.trigger}
-            {element.character}
-            {children}
-          </Fragment>
-        )}
+              <Fragment>
+                {element.trigger}
+                {element.character}
+                {children}
+              </Fragment>
+            )}
       </span>
     </span>
   )

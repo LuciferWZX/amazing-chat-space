@@ -25,7 +25,7 @@ export function MessageSectionRight(props: MessageSectionRightProps) {
     return null
   }, [status])
   return (
-    <div className="flex shrink-0 w-8 items-end pl-1">
+    <div className="flex shrink-0 w-16 items-end pl-1">
       {messageStatus}
     </div>
   )
