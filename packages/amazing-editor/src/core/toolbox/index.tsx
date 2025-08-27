@@ -1,7 +1,7 @@
 import type { ToolItem } from '@/types'
 import { cn, LucideIcons, Popover, PopoverContent, PopoverTrigger, ShadTooltip, Tooltip, TooltipContent, TooltipTrigger } from '@amazing-chat/ui'
 import { useMemo, useState } from 'react'
-import { useSlateStatic } from 'slate-react'
+import { ReactEditor, useSlateStatic } from 'slate-react'
 import { useShallow } from 'zustand/shallow'
 import { AmazingEditorManager } from '@/index.ts'
 import { EditorCommand } from '@/lib/command.ts'
@@ -84,7 +84,7 @@ function Toolbox(props: ToolboxProps) {
                   {tool.label}
                 </TooltipContent>
               </ShadTooltip>
-              <PopoverContent forceMount={true} className="p-0 w-[inner]">
+              <PopoverContent forceMount={true} className="p-0 w-[inner] ">
                 <EmojiPicker
                   onSelect={(emoji) => {
                     setEmojiPickerVisible(false)
@@ -94,6 +94,7 @@ function Toolbox(props: ToolboxProps) {
                         emoji: emoji.emoji,
                         url: emoji.url,
                       })
+                      ReactEditor.focus(editor)
                     })
                   }}
                 />

@@ -60,7 +60,7 @@ function ConversationItem(props: ConversationItemProps) {
     const content = lastMessage.content as MessageContent
     if (isTextContent(content)) {
       const pureText = AmazingEditorManager.getTextFromHtml(content.text || '')
-      return pureText
+      return <span dangerouslySetInnerHTML={{ __html: pureText }} />
     }
     return content.conversationDigest
   }, [conversation.lastMessage])

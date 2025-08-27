@@ -9,7 +9,7 @@ import { MessageAvatar } from './MessageAvatar'
 import { MessageBubble } from './MessageBubble'
 import { MessageContainer } from './MessageContainer'
 import { MessageSectionRight } from './MessageSectionRight'
-import { RenderWithMention } from './RenderWithMention'
+import { RenderEditorText } from './RenderEditorText'
 
 interface MessageItemProps {
   message: Message
@@ -106,7 +106,7 @@ function MessageItem(props: MessageItemProps) {
                   'rounded-br-none!': closeToNextMessage && !isFromMe,
                 })}
               >
-                <RenderWithMention html={content} />
+                <RenderEditorText html={content} />
               </MessageBubble>
               <MessageSectionRight status={message.status} />
             </div>

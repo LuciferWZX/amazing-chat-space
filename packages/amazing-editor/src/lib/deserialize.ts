@@ -36,6 +36,13 @@ export function deserialize(el: ChildNode, markAttributes = {}): (Descendant | s
       const trigger = mel.getAttribute('data-trigger')
       return jsx('element', { type: 'mention', value, label, trigger }, children)
     })
+    .with('IMG', () => {
+      const img = el as any
+      const url = img.getAttribute('data-url')
+      const unified = img.getAttribute('data-unified')
+      const emoji = img.getAttribute('data-emoji')
+      return jsx('element', { type: 'emoji', url, unified, emoji }, children)
+    })
     .otherwise(() => {
       return children
     }) as (Descendant | string)[] | Descendant | string | null

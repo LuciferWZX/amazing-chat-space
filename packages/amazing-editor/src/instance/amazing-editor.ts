@@ -73,6 +73,11 @@ export class AmazingEditorManager {
               text: `${node.trigger}${node.character}`,
             }
           }
+          if (node.type === 'emoji') {
+            return {
+              text: `<img src="${node.url}" alt="${node.emoji}" class='amazing-emoji' />`,
+            }
+          }
           return {
             ...node,
             children: transformVoidToText(node.children),
@@ -146,5 +151,30 @@ export class AmazingEditorManager {
     ReactEditor.focus(editor)
     editor.onChange()
     editor.history = { undos: [], redos: [] } // 手动清空历史
+  }
+
+  static focusVoidElement(editor: Editor, node: Node, ele: HTMLElement, clientX: number) {
+    const rect = ele.getBoundingClientRect()
+    // 计算点击点是否在中心线右侧
+    const isClickOnRight = clientX > (rect.left + rect.width / 2)
+
+    // 获取当前节点在 Slate 中的路径
+    const elementPath = ReactEditor.findPath(editor, node)
+
+    // 根据点击位置决定目标位置
+    const targetPoint = isClickOnRight
+      ? editor.after(elementPath) // 右侧 → 节点后
+      : editor.before(elementPath) // 左侧 → 节点前
+
+    // 如果找到了有效位置，设置光标
+    if (targetPoint) {
+      Transforms.select(editor, {
+        anchor: targetPoint,
+        focus: targetPoint,
+      })
+    }
+
+    // 确保编辑器获得焦点
+    ReactEditor.focus(editor)
   }
 }

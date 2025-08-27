@@ -34,5 +34,8 @@ export function serialize(node: Descendant): string {
       const text = `${mentionNode.trigger}${mentionNode.character}`
       return `<span class="amazing-mention" data-trigger="${mentionNode.trigger}" data-mention-value="${mentionNode.value}" data-label="${mentionNode.character}">${text}</span>`
     })
+    .with({ type: 'emoji' }, (emojiNode) => {
+      return `<img class="amazing-emoji" data-url="${emojiNode.url}" data-unified="${emojiNode.unified}" data-emoji="${emojiNode.emoji}" />`
+    })
     .otherwise(() => children)
 }
